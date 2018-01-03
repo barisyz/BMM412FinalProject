@@ -25,8 +25,20 @@ private:
 
 	static void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
 
-		//Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
-		//cam->mouse_event(xpos, ypos);
+		int width = 0, height = 0;
+		glfwGetWindowSize(window, &width, &height);
+
+		xpos = float(width / 2 - xpos);
+		ypos = float(height / 2 - ypos);
+
+		Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
+		cam->mouse_event(xpos, ypos);
+	}
+
+	static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+
+
+
 	}
 };
 

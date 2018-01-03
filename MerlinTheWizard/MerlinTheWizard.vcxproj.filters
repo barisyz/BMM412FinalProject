@@ -45,6 +45,9 @@
     <ClCompile Include="src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -74,6 +77,12 @@
     <ClInclude Include="src\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\BasicVertex.glsl">
@@ -82,21 +91,11 @@
     <None Include="shaders\FragmentShader.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="models\cloud.mtl" />
-    <None Include="models\part.mtl" />
-    <None Include="models\rock.mtl" />
-    <None Include="models\surface.mtl" />
-    <None Include="models\tree1.mtl" />
-    <None Include="models\tree2.mtl" />
-    <None Include="models\wizard.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="models\cloud.obj" />
-    <Resource Include="models\part.obj" />
-    <Resource Include="models\rock.obj" />
-    <Resource Include="models\surface.obj" />
-    <Resource Include="models\tree1.obj" />
-    <Resource Include="models\tree2.obj" />
-    <Resource Include="models\wizard.obj" />
+    <None Include="shaders\particle.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\particle.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

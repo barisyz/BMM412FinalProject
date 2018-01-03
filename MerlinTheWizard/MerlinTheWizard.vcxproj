@@ -104,10 +104,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\hakas\Source\Repos\BMM412FinalProject\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\hakas\Source\Repos\BMM412FinalProject\Lib\ASSIMP;C:\Users\hakas\Source\Repos\BMM412FinalProject\Lib\GL;C:\Users\hakas\Source\Repos\BMM412FinalProject\Lib\GLFW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glfw3.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -153,6 +156,7 @@
     <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -165,58 +169,18 @@
     <ClInclude Include="src\InputManager.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleSystem.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="models\cloud.mtl" />
-    <None Include="models\part.mtl" />
-    <None Include="models\rock.mtl" />
-    <None Include="models\surface.mtl" />
-    <None Include="models\tree1.mtl" />
-    <None Include="models\tree2.mtl" />
-    <None Include="models\wizard.mtl" />
     <None Include="shaders\BasicVertex.glsl" />
     <None Include="shaders\FragmentShader.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="models\cloud.obj">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Resource>
-    <Resource Include="models\part.obj">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Resource>
-    <Resource Include="models\rock.obj">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Resource>
-    <Resource Include="models\surface.obj">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Resource>
-    <Resource Include="models\tree1.obj">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Resource>
-    <Resource Include="models\tree2.obj">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Resource>
-    <Resource Include="models\wizard.obj">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Resource>
+    <None Include="shaders\particle.frag" />
+    <None Include="shaders\particle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

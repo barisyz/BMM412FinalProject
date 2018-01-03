@@ -1,6 +1,5 @@
 #include "Entity.h"
 #include "glm/ext.hpp"
-#include "glm/ext.hpp"
 #include "stdio.h"
 #include <iostream>
 #include <string>
@@ -29,16 +28,17 @@ public:
 	void Rotate(float verticalAngle, float horizontalAngle);
 	void Render(Shader shader);
 	void Roll();
-	
+
 	void keyboard_event(int key, int scancode, int action, int mode);
 	void mouse_event(double xpos, double ypos);
+
 	void UpdateProcess();
 
 	const glm::mat4& getViewMatrix()           const noexcept;
 	const glm::mat4& getProjMatrix()           const noexcept;
 	const glm::mat4& getProjectionViewMatrix() const noexcept;
 
-	
+
 	//void scroll_event(double xoffset, double yoffset);
 private:
 	glm::mat4 c_projectionMatrix;
@@ -46,6 +46,7 @@ private:
 	glm::mat4 c_projViewMatrix;
 
 	bool key_events_buffer[1024] = { 0 };
+	double mouse_position_buffer[3];
 
 	float horizontalAngle, verticalAngle;
 };

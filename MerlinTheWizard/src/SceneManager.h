@@ -12,11 +12,13 @@ public:
 	SceneManager();
 	//~SceneManager();
 	void CreateScene();
-	void drawAll();
+	void drawAll(double deltaTime);
 private:
 	std::string ShaderBase = "shaders";
 	Shader mShader;
+	Shader particleShader;
 	std::vector<Entity> mEntityList;
+	std::vector<ParticleSystem> mParticleSystemList;
 	InputManager mInputManager;
 	Camera mCamera;
 	GLFWwindow* mWindow;

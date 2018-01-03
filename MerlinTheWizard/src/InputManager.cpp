@@ -7,6 +7,7 @@ InputManager::InputManager(GLFWwindow* window, Camera* camera)
 	glfwSetWindowUserPointer(window, camera);
 	glfwSetKeyCallback(window, &key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 }
 
 InputManager::InputManager()

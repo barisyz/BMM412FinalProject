@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 #define SCREEN_TITLE "Merlin The Wizard"
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 800
 
 void error_callback(int error, const char* description)
 {
@@ -15,21 +15,36 @@ int main(void)
 {
 	glfwSetErrorCallback(error_callback); //Error callback
 
-	/* Initialize the library */
+										  /* Initialize the library */
 	if (!glfwInit())
 		return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
 	Window window = Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE);
 
+	// Accept fragment if it closer to the camera than the former one
+	glDepthFunc(GL_LESS);
+
 	GLFWwindow *win = window.getWindow();
 	Renderer renderer = Renderer(win);
 
+	// Hide the mouse and enable unlimited movement
+	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	int width, height;
+	double lastTime = 0;
 	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(win)){
+	while (!glfwWindowShouldClose(win)) {
+		//Get the time betwwen frames
+		double currentTime = glfwGetTime();
+		double delta = currentTime - lastTime;
+		lastTime = currentTime;
+		//Set cursor position to middle
+		glfwGetWindowSize(win, &width, &height);
+		glfwSetCursorPos(win, width / 2, height / 2);
 
 		/* Render here */
-		renderer.RenderScene();
+		renderer.RenderScene(delta);
 
 		/* Swap front and back buffers */
 		window.swapBuffers();

@@ -9,7 +9,7 @@ Camera::Camera()
 Camera::Camera(int width, int height)
 {
 	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.001f, 2000.0f);
-	
+
 	//example start state
 	c_position = { 0, 0, -1 };
 	c_direction = { 0, 0, 1 };
@@ -96,7 +96,7 @@ void Camera::Roll() {
 
 void Camera::Render(Shader shader) {
 	//c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)1024.0f / (float)768.0f, 0.0001f, 5000.0f);
-	
+
 	c_viewMatrix = glm::lookAt(
 		c_position, // Camera is at (x,y,z), in World Space
 		c_position + c_direction, // and looks at some point
@@ -106,7 +106,7 @@ void Camera::Render(Shader shader) {
 	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ViewMatrix"), 1, GL_FALSE, &this->c_viewMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ProjectionMatrix"), 1, GL_FALSE, &this->c_projectionMatrix[0][0]);
 
-	UpdateProcess(); 
+	UpdateProcess();
 }
 
 const glm::mat4& Camera::getViewMatrix() const noexcept
@@ -124,7 +124,7 @@ const glm::mat4& Camera::getProjectionViewMatrix() const noexcept
 	return c_projViewMatrix;
 }
 
-void Camera::keyboard_event(int key, int scancode, int action, int mode) 
+void Camera::keyboard_event(int key, int scancode, int action, int mode)
 {
 
 	if (key == GLFW_KEY_F) {
@@ -142,7 +142,11 @@ void Camera::keyboard_event(int key, int scancode, int action, int mode)
 
 void Camera::mouse_event(double xpos, double ypos)
 {
-	Rotate(ypos, xpos);
+	mouse_position_buffer[0] = xpos;
+	mouse_position_buffer[1] = ypos;
+	mouse_position_buffer[2] = 1;
+
+
 }
 
 void Camera::UpdateProcess()
@@ -171,20 +175,10 @@ void Camera::UpdateProcess()
 	{
 		MoveUpward(-0.005);
 	}
-	else if (key_events_buffer[GLFW_KEY_UP])
-	{
-		Rotate(1, 0);
+
+	if (mouse_position_buffer[2] == 1) {
+		Rotate(mouse_position_buffer[1], mouse_position_buffer[0]);
+		mouse_position_buffer[2] = 0;
 	}
-	else if (key_events_buffer[GLFW_KEY_DOWN])
-	{
-		Rotate(-1, 0);
-	}
-	else if (key_events_buffer[GLFW_KEY_RIGHT])
-	{
-		Rotate(0,-1);
-	}
-	else if (key_events_buffer[GLFW_KEY_LEFT])
-	{
-		Rotate(0, 1);
-	}
+
 }

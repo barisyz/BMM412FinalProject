@@ -11,7 +11,7 @@ class Renderer
 public:
 	Renderer(GLFWwindow* window);
 	~Renderer();
-	void RenderScene();
+	void RenderScene(double deltatime);
 private:
 	SceneManager mSceneManager;
 };
