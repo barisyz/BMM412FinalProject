@@ -147,12 +147,6 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 			indices.push_back(face.mIndices[j]);
 		}
 	}
-	
-	if (scene->HasMaterials()) {
-		for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
-			
-		}
-	}
 
 	return Mesh(vertices, indices);
 }

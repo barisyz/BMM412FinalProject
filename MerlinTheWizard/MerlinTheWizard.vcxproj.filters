@@ -91,12 +91,12 @@
     <None Include="models\wizard.mtl" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\cloud.obj" />
-    <Object Include="models\part.obj" />
-    <Object Include="models\rock.obj" />
-    <Object Include="models\surface.obj" />
-    <Object Include="models\tree1.obj" />
-    <Object Include="models\tree2.obj" />
-    <Object Include="models\wizard.obj" />
+    <Resource Include="models\cloud.obj" />
+    <Resource Include="models\part.obj" />
+    <Resource Include="models\rock.obj" />
+    <Resource Include="models\surface.obj" />
+    <Resource Include="models\tree1.obj" />
+    <Resource Include="models\tree2.obj" />
+    <Resource Include="models\wizard.obj" />
   </ItemGroup>
 </Project>
