@@ -26,7 +26,7 @@ public:
 	void MoveZ(float direction);
 
 	void Rotate(float verticalAngle, float horizontalAngle);
-	void Render(Shader shader, double deltatime);
+	void Render(GLuint shader, double deltatime);
 	void Roll();
 
 	void keyboard_event(int key, int scancode, int action, int mode);

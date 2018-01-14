@@ -15,7 +15,6 @@ int main(void)
 {
 	glfwSetErrorCallback(error_callback); //Error callback
 
-										  /* Initialize the library */
 	if (!glfwInit())
 		return -1;
 

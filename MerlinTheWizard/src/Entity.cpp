@@ -31,10 +31,6 @@ Entity::Entity(const char * modelPath, Shader shader, Shader particleShader)
 
 void Entity::Render(double deltaTime)
 {
-}
-
-void Entity::Render()
-{
 	mShader.Use();
 	mModelMatrix = mTranformation.TranslationMatrix * mTranformation.RotationMatrix * mTranformation.ScalingMatrix;
 	glUniformMatrix4fv(glGetUniformLocation(mShader.GetID(), "ModelMatrix"), 1, GL_FALSE, &mModelMatrix[0][0]);
@@ -94,6 +90,11 @@ void Entity::Scale(glm::vec3 scaleVec)
 void Entity::AddParticleSystem(ParticleSystem sys) {
 
 	this->particleSystemList.push_back(sys);
+}
+
+GLuint Entity::GetShader()
+{
+	return mShader.GetID();
 }
 
 std::vector<ParticleSystem> Entity::GetParticleSystemList() {

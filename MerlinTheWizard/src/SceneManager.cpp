@@ -33,12 +33,10 @@ void SceneManager::CreateScene()
 	mInputManager = InputManager(mWindow, &mCamera);
 	mInputManager.sceneEntityList = &mEntityList;
 
-	Entity wizard = Entity("models/wizard.obj", mShader, particleShader);
-	wizard.Scale(glm::vec3(0.05f, 0.05f, 0.05f));
-	wizard.Translate(glm::vec3(4.0f, 0.0f, -0.0f));
+	CreateModels();
 
-	wizard.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
-
+	glEnable(GL_DEPTH_TEST);
+	
 	/*ParticleSystem sys3 = ParticleSystem(300);
 	sys3.SetBuffers(particleShader);
 	sys3.maindirType = 0;
@@ -50,8 +48,6 @@ void SceneManager::CreateScene()
 	sys3.randomdir = true;
 	wizard.AddParticleSystem(sys3);*/
 
-	mEntityList.push_back(wizard);
-	CreateModels();
 
 	/*ParticleSystem sys = ParticleSystem();
 	sys.SetBuffers(particleShader);
@@ -71,111 +67,26 @@ void SceneManager::CreateScene()
 	sys2.SetTripleS(0.1, 0.1, 0);
 	mEntityList.at(2).AddParticleSystem(sys2);
 */
-	glEnable(GL_DEPTH_TEST);
 }
 
 void SceneManager::drawAll(double deltaTime)
 {
 	particleShader.Use();
-	mCamera.Render(particleShader.GetID());
+	mCamera.Render(particleShader.GetID(), deltaTime);
 
 	GLuint currentShader = -1;
 
 	for (unsigned int i = 0; i < mEntityList.size(); i++) {
-		if(currentShader != mEntityList[i].GetShader())
+		if (currentShader != mEntityList[i].GetShader())
 		{
 			currentShader = mEntityList[i].GetShader();
 			glUseProgram(currentShader);
 		}
-		mCamera.Render(currentShader);
+		mCamera.Render(currentShader, deltaTime);
 		mEntityList[i].Render(deltaTime);
 		mEntityList[i].RenderParticles(deltaTime, mCamera.c_position, mCamera.c_upVector, mCamera.c_rightVector);
 	}
-}
 
-
-void SceneManager::CreateModels()
-{
-	//model string
-	std::string wizardStr = ModelBase + "wizard.dae";
-	std::string cloudStr = ModelBase + "cloud.obj";
-	std::string mountainStr = ModelBase + "part.obj";
-	/*std::string wolfStr = ModelBase + "wolf1.dae";
-	std::string spiderStr = ModelBase + "spider.dae";*/
-
-	Entity wizard = Entity(wizardStr.c_str(), mSkinningShader, particleShader);
-	//wizard.Rotate(glm::vec3(5.0, 4.0, 5.0), -90.0f);
-	wizard.Scale(glm::vec3(0.025f, 0.025f, 0.025f));
-	wizard.Translate(glm::vec3(2.20f, 0.15f, -0.2f));
-	mEntityList.push_back(wizard);
-
-	//Entity wolf = Entity(wolfStr.c_str(), mSkinningShader, particleShader);
-	////wizard.Rotate(glm::vec3(5.0, 4.0, 5.0), -90.0f);
-	//wolf.Scale(glm::vec3(0.4f, 0.4f, 0.4f));
-	//wolf.Translate(glm::vec3(2.3f, 0.0f, -0.2f));
-	//mEntityList.push_back(wolf);
-
-	//Entity spider = Entity(spiderStr.c_str(), mSkinningShader, particleShader);
-	////wizard.Rotate(glm::vec3(5.0, 4.0, 5.0), -90.0f);
-	//spider.Scale(glm::vec3(0.45f, 0.45f, 0.45f));
-	//spider.Translate(glm::vec3(2.3f, 0.0f, 0.8f));
-	//mEntityList.push_back(spider);
-
-	Entity cloud = Entity(cloudStr.c_str(), mShader, particleShader);
-	cloud.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-	cloud.Translate(glm::vec3(-0.6, 3.0f, 0.0f));
-	mEntityList.push_back(cloud);
-
-	Entity cloud1 = Entity(cloudStr.c_str(), mShader, particleShader);
-	cloud1.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-	cloud1.Translate(glm::vec3(0.0, 3.0f, 0.0f));
-	mEntityList.push_back(cloud1);
-
-	Entity cloud2 = Entity(cloudStr.c_str(), mShader, particleShader);
-	cloud2.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-	cloud2.Translate(glm::vec3(0.6, 3.0f, 0.0f));
-	mEntityList.push_back(cloud2);
-
-	Entity mountain = Entity(mountainStr.c_str(), mShader, particleShader);
-	mountain.Scale(glm::vec3(0.2, 0.2, 0.2));
-	mEntityList.push_back(mountain);
-
-	mEntityList.push_back(tree);*/
-
-	//Entity tree1 = Entity("models/tree2.obj", mShader);
-	//tree1.Scale(glm::vec3(0.3f, 0.3f, 0.3f));
-	//tree1.Translate(glm::vec3(0.5f, 0.0f, 0.0f));
-	//mEntityList.push_back(tree1);
-
-	//Entity surface = Entity("models/surface.obj", mShader);
-	//surface.Scale(glm::vec3(1.0f, 1.0f, 0.5f));
-	//surface.Translate(glm::vec3(0.0f, 0.0, 0.0f));
-	//mEntityList.push_back(surface);
-
-	Entity mountain = Entity("models/part.obj", mShader, particleShader);
-	mountain.Scale(glm::vec3(0.3, 0.3, 0.3));
-	mEntityList.push_back(mountain);
-
-	//for (int i = 0; i < 10; i++) { UpdateScene(); }
-
-	UpdateScene();
-
-	glEnable(GL_DEPTH_TEST);
-}
-
-void SceneManager::drawAll(double deltaTime)
-{
-	particleShader.Use();
-	mCamera.Render(particleShader, deltaTime);
-
-	mShader.Use();
-	mCamera.Render(mShader, deltaTime);
-
-	for (unsigned int i = 0; i < mEntityList.size(); i++) {
-		//cout << deltaTime << endl;
-		//mEntityList[i].Move(deltaTime);
-		mEntityList[i].Render();
-	}
 	bool temp = false;
 	for (unsigned int i = 0; i < mSpellList.size(); i++) {
 		//cout << deltaTime << endl;
@@ -187,7 +98,7 @@ void SceneManager::drawAll(double deltaTime)
 		}
 		if (!temp) {
 			mSpellList[i].Move(deltaTime);
-			mSpellList[i].Render();
+			mSpellList[i].Render(deltaTime);
 		}
 
 	}
@@ -197,19 +108,16 @@ void SceneManager::drawAll(double deltaTime)
 
 	}
 
-	for (unsigned int i = 0; i < mSpellList.size(); i++) {
-		//çalýþmamasý lazým ama çalýþýyo denediðim her koþulda xdé
-		if (mSpellList[i].GetParticleSystemList()[1].looplife <= 0)
-			mSpellList.erase(mSpellList.begin() + i);
-
-	}
-
-
+	//for (unsigned int i = 0; i < mSpellList.size(); i++) {
+	//	//çalýþmamasý lazým ama çalýþýyo denediðim her koþulda xdé
+	//	if (mSpellList[i].GetParticleSystemList()[1].looplife <= 0)
+	//		mSpellList.erase(mSpellList.begin() + i);
+	//}
 }
 
 void SceneManager::UpdateScene() {
 
-	Spell rock = Spell("models/rock.obj", mShader, particleShader);
+	Spell rock = Spell("res/models/rock.obj", mShader, particleShader);
 	rock.Scale(glm::vec3(0.2f, 0.2f, 0.1f));
 	rock.Translate(glm::vec3(-4.9f, 0.0f, 0.0f));
 
@@ -249,4 +157,44 @@ void SceneManager::UpdateScene() {
 
 	rock.SetVelocity(glm::vec3(0.5, 0.03, 0));
 	mSpellList.push_back(rock);
+}
+
+void SceneManager::CreateModels()
+{
+	//model string
+	std::string wizardStr = ModelBase + "wizard.dae";
+	std::string cloudStr = ModelBase + "cloud.obj";
+	std::string mountainStr = ModelBase + "part.obj";
+	/*std::string wolfStr = ModelBase + "wolf1.dae";
+	std::string spiderStr = ModelBase + "spider.dae";*/
+
+	Entity wizard = Entity(wizardStr.c_str(), mSkinningShader, particleShader);
+	//wizard.Rotate(glm::vec3(5.0, 4.0, 5.0), -90.0f);
+	wizard.Scale(glm::vec3(0.025f, 0.025f, 0.025f));
+	wizard.Translate(glm::vec3(2.20f, 0.15f, -0.2f));
+	wizard.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
+	mEntityList.push_back(wizard);
+
+	Entity cloud = Entity(cloudStr.c_str(), mShader, particleShader);
+	cloud.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
+	cloud.Translate(glm::vec3(-0.6, 3.0f, 0.0f));
+	mEntityList.push_back(cloud);
+
+	Entity cloud1 = Entity(cloudStr.c_str(), mShader, particleShader);
+	cloud1.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
+	cloud1.Translate(glm::vec3(0.0, 3.0f, 0.0f));
+	mEntityList.push_back(cloud1);
+
+	Entity cloud2 = Entity(cloudStr.c_str(), mShader, particleShader);
+	cloud2.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
+	cloud2.Translate(glm::vec3(0.6, 3.0f, 0.0f));
+	mEntityList.push_back(cloud2);
+
+	Entity mountain = Entity(mountainStr.c_str(), mShader, particleShader);
+	mountain.Scale(glm::vec3(0.3, 0.3, 0.3));
+	mEntityList.push_back(mountain);
+
+	//UpdateScene();
+
+	glEnable(GL_DEPTH_TEST);
 }

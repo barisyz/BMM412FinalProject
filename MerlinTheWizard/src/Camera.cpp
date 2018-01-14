@@ -103,7 +103,7 @@ void Camera::Roll() {
 	c_upVector = glm::cross(c_rightVector, c_direction);
 }
 
-void Camera::Render(Shader shader, double deltatime) {
+void Camera::Render(GLuint shader, double deltatime) {
 	//c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)1024.0f / (float)768.0f, 0.0001f, 5000.0f);
 
 	c_viewMatrix = glm::lookAt(
