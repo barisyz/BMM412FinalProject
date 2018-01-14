@@ -161,6 +161,7 @@
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Animation.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -174,13 +175,16 @@
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Animation.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\BasicVertex.glsl" />
-    <None Include="shaders\FragmentShader.glsl" />
-    <None Include="shaders\particle.frag" />
-    <None Include="shaders\particle.vert" />
+    <None Include="res\shaders\BasicVertex.glsl" />
+    <None Include="res\shaders\FragmentShader.glsl" />
+    <None Include="res\shaders\particle.frag" />
+    <None Include="res\shaders\particle.vert" />
+    <None Include="res\shaders\SkinningFrag.glsl" />
+    <None Include="res\shaders\SkinningVertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

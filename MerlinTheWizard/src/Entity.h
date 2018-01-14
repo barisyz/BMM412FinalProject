@@ -20,8 +20,8 @@ public:
 
 	Entity();
 	Entity(const char * fileName, Shader shader, Shader particleShader);
-	~Entity();
-	void Render();
+	//~Entity();
+	void Render(double deltaTime);
 	void RenderParticles(double deltatime, glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraRight);
 
 	void Translate(glm::vec3 translateVec);
@@ -29,6 +29,7 @@ public:
 	void Scale(glm::vec3 scaleVec);
 
 	void AddParticleSystem(ParticleSystem sys);
+	GLuint GetShader();
 	glm::mat4 GetModelMatrix();
 
 private:
@@ -36,7 +37,7 @@ private:
 	glm::mat4 mModelMatrix;
 	Shader mShader;
 	Shader mParticleShader;
-
+	
 	std::vector<ParticleSystem> particleSystemList;
 
 	sTrasformation mTranformation;

@@ -8,25 +8,28 @@ Entity::Entity()
 	mModelMatrix = glm::mat4();
 }
 
-Entity::Entity(const char * fileName, Shader shader, Shader particleShader)
+Entity::Entity(const char * modelPath, Shader shader, Shader particleShader)
 {
 	mShader = shader;
 	mParticleShader = particleShader;
 	mTranformation = { glm::mat4(), glm::mat4(), glm::mat4() };
 	mModelMatrix = glm::mat4();
-	mModel = Model(fileName);
+	mModel = Model(modelPath);
 }
 
-Entity::~Entity()
-{
-}
+//Entity::~Entity()
+//{
+//}
 
-void Entity::Render()
+void Entity::Render(double deltaTime)
 {
+	if (mModel.IsAnimated()) {
+		position += glm::vec3(0.1f, 0.1f, 0.1f);
+	}
 	mShader.Use();
 	mModelMatrix = mTranformation.TranslationMatrix * mTranformation.RotationMatrix * mTranformation.ScalingMatrix;
 	glUniformMatrix4fv(glGetUniformLocation(mShader.GetID(), "ModelMatrix"), 1, GL_FALSE, &mModelMatrix[0][0]);
-	mModel.Draw(mShader);
+	mModel.Draw(mShader, deltaTime);
 }
 
 void Entity::RenderParticles(double deltatime, glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraRight)
@@ -37,7 +40,6 @@ void Entity::RenderParticles(double deltatime, glm::vec3 cameraPos, glm::vec3 ca
 		this->particleSystemList[i].MainLoop(cameraPos);
 		this->particleSystemList[i].Render(cameraRight, cameraUp);
 	}
-
 }
 
 glm::mat4 Entity::GetModelMatrix()
@@ -69,4 +71,9 @@ void Entity::Scale(glm::vec3 scaleVec)
 void Entity::AddParticleSystem(ParticleSystem sys) {
 
 	this->particleSystemList.push_back(sys);
+}
+
+GLuint Entity::GetShader()
+{
+	return mShader.GetID();
 }

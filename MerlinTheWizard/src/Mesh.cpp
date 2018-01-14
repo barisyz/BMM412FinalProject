@@ -4,10 +4,11 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices)
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<VertexBoneData> bones)
 {
 	mVertices = vertices;
 	mIndices = indices;
+	mBones = bones;
 
 	SetupMesh();
 }
@@ -45,21 +46,56 @@ void Mesh::SetupMesh()
 	glBindVertexArray(mVAO);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	
-	glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
+
+	if (mBones.size() <= 0) 
+	{
+		glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
+	}
+	else 
+	{
+		glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex) + sizeof(VertexBoneData) * mBones.size(), NULL, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, mVertices.size() * sizeof(Vertex), &mVertices[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), sizeof(VertexBoneData) * mBones.size(), &mBones[0]);
+	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(GLuint), &mIndices[0], GL_STATIC_DRAW);
-	
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)0);
-	
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, Normal));
-	
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, TexCoords));
 
+	if(mBones.size() > 0)
+	{
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)0);
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, Normal));
+
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, TexCoords));
+		
+		glEnableVertexAttribArray(3);
+		glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (GLvoid *)(mVertices.size() * sizeof(Vertex)));
+		
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)(mVertices.size() * sizeof(Vertex) + offsetof(VertexBoneData, Weights)));
+		
+		/*std::cout << "sizeof(Vertex):" << sizeof(Vertex) << "\n";
+		std::cout << "(GLvoid *)offsetof(Vertex, Normal)" << (GLvoid *)offsetof(Vertex, Normal) << "\n";
+		std::cout << "(GLvoid *)offsetof(Vertex, TexCoords)" << (GLvoid *)offsetof(Vertex, TexCoords) << "\n";
+		std::cout << "sizeof(VertexBoneData):" << sizeof(VertexBoneData) << "\n";
+		std::cout << "(const GLvoid*)sizeof(Vertex):" << (const GLvoid*)sizeof(Vertex) << "\n";
+		std::cout << "(const GLvoid*)(sizeof(Vertex) + 16):" << (const GLvoid*)(sizeof(Vertex) + 16) << "\n";*/
+	}
+	else
+	{
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)0);
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, Normal));
+
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, TexCoords));
+	}
 	glBindVertexArray(0);
 }
 

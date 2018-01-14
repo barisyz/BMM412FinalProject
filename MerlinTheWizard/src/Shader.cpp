@@ -73,6 +73,11 @@ void Shader::Use()
 	glUseProgram(mID);
 }
 
+void Shader::Use(GLuint id)
+{
+	glUseProgram(id);
+}
+
 const char* Shader::ReadShaderFile(const char* path)
 {
 	FILE* fp = fopen(path, "r");

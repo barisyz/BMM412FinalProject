@@ -6,27 +6,34 @@ Model::Model()
 
 Model::Model(const char * modelPath)
 {
-	LoadModel(modelPath);
-}
-
-Model::~Model()
-{
-}
-
-bool Model::LoadModel(const char* Filename)
-{
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(Filename,
-		aiProcess_CalcTangentSpace |
+
+	mScene = (importer.ReadFile(modelPath,
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
+		aiProcess_GenSmoothNormals));
 
-	// If the import failed, report it
-	if (!scene)
+	if (!mScene)
 	{
 		fprintf(stderr, "Error: %s\n", importer.GetErrorString());
-		return false;
+	}
+
+	LoadModel(mScene);
+
+	if (mScene->HasAnimations()) {
+		mScene = importer.GetOrphanedScene();
+		mAnimation.SetScene(mScene);
+	}
+}
+
+bool Model::LoadModel(const aiScene* scene)
+{
+	if (scene->HasAnimations())
+	{
+		aiMatrix4x4 inverseTransformMat = scene->mRootNode->mTransformation;
+		inverseTransformMat.Inverse();
+
+		mAnimation.SetGlobalInverseTransform(inverseTransformMat);
 	}
 
 	//todo texture icin bakilacak suan embeded material icin yapiyor
@@ -63,7 +70,6 @@ bool Model::LoadModel(const char* Filename)
 	return true;
 }
 
-
 void Model::ApplyMaterial(unsigned int materialIndex, Shader shader)
 {
 	sMaterial mat = mMaterials[materialIndex];
@@ -72,16 +78,31 @@ void Model::ApplyMaterial(unsigned int materialIndex, Shader shader)
 	glUniform4fv(glGetUniformLocation(shader.GetID(), "Ks"), 1, &mat.Ks[0]);
 	glUniform4fv(glGetUniformLocation(shader.GetID(), "Kd"), 1, &mat.Kd[0]);
 	glUniform1f(glGetUniformLocation(shader.GetID(), "Shininess"), mat.Ns);
-
 }
 
-void Model::Draw(Shader shader)
+void Model::Draw(Shader shader, float time)
 {
+	if (mAnimation.IsAnimated())
+	{
+		if (!mAnimation.IsLocationSetted())
+		{
+			mAnimation.SetupBonesLocation(shader.GetID());
+		}
+		float RunningTime = (float)((double)glfwGetTime() - (double)time);
+		mAnimation.MakeBoneTransform(RunningTime);
+		
+	}
+
 	for (unsigned int i = 0; i < mMeshes.size(); i++)
 	{
 		ApplyMaterial(mMeshes[i].GetMaterialIndex(), shader);
 		mMeshes[i].Draw(shader);
 	}
+}
+
+bool Model::IsAnimated()
+{
+	return mAnimation.IsAnimated();
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene)
@@ -105,6 +126,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	// Data to fill
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
+	vector<VertexBoneData> bones;
 
 	// Walk through each of the mesh's vertices
 	for (GLuint i = 0; i < mesh->mNumVertices; i++)
@@ -148,6 +170,28 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		}
 	}
 
-	return Mesh(vertices, indices);
+	if (mesh->mNumBones > 0) 
+	{
+		bones.resize(mesh->mNumVertices);
+
+		for (GLuint i = 0; i < mesh->mNumBones; i++) {
+			std::string BoneName(mesh->mBones[i]->mName.data);
+			GLuint BoneIndex = 0;
+
+			mAnimation.AddBoneInfo(&BoneIndex, mesh->mBones[i], BoneName);
+
+			for (GLuint j = 0; j < mesh->mBones[i]->mNumWeights; j++) {
+				GLuint VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
+				float Weight = mesh->mBones[i]->mWeights[j].mWeight;
+
+				for (GLuint k = 0; k < NUM_BONES_PER_VERTEX; k++) {
+					bones[VertexID].IDs[k] = BoneIndex;
+					bones[VertexID].Weights[k] = Weight;
+				}
+			}
+		}
+	}
+
+	return Mesh(vertices, indices, bones);
 }
 

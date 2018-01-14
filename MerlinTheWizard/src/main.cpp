@@ -32,6 +32,7 @@ int main(void)
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	int width, height;
+	double startTime = glfwGetTime();
 	double lastTime = 0;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(win)) {

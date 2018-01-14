@@ -94,7 +94,7 @@ void Camera::Roll() {
 	c_upVector = glm::cross(c_rightVector, c_direction);
 }
 
-void Camera::Render(Shader shader) {
+void Camera::Render(GLuint shader) {
 	//c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)1024.0f / (float)768.0f, 0.0001f, 5000.0f);
 
 	c_viewMatrix = glm::lookAt(
@@ -103,8 +103,8 @@ void Camera::Render(Shader shader) {
 		c_upVector  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 
-	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ViewMatrix"), 1, GL_FALSE, &this->c_viewMatrix[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ProjectionMatrix"), 1, GL_FALSE, &this->c_projectionMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "ViewMatrix"), 1, GL_FALSE, &this->c_viewMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "ProjectionMatrix"), 1, GL_FALSE, &this->c_projectionMatrix[0][0]);
 
 	UpdateProcess();
 }
