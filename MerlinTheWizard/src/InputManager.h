@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+#include "Entity.h"
 #include "GLFW\glfw3.h"
 #include <iostream>
 
@@ -9,9 +10,12 @@ public:
 	InputManager();
 	InputManager(GLFWwindow* window, Camera* camera);
 	~InputManager();
+
+	std::vector<Entity> *sceneEntityList;
 private:
 	GLFWwindow* mWindow;
 	Camera* mCamera;
+
 
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
@@ -36,8 +40,13 @@ private:
 	}
 
 	static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+		
+		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+			
+		}
+		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 
-
+		}
 
 	}
 };

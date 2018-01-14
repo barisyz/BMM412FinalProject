@@ -3,6 +3,7 @@
 #include "glm\mat4x4.hpp"
 #include "glm\gtc\matrix_transform.hpp"
 #include "ParticleSystem.h"
+#include "Collider.h"
 
 struct sTrasformation
 {
@@ -17,6 +18,9 @@ public:
 	glm::vec3 position;
 	glm::vec3 scale;
 	glm::vec3 rotation;
+	std::vector<ParticleSystem> particleSystemList;
+
+	CubeCollider collider;
 
 	Entity();
 	Entity(const char * fileName, Shader shader, Shader particleShader);
@@ -28,16 +32,19 @@ public:
 	void Rotate(glm::vec3 rotateVec, float angle);
 	void Scale(glm::vec3 scaleVec);
 
+	void InitiaizeCollider(glm::vec3 scale, bool initialized = true);
+
 	void AddParticleSystem(ParticleSystem sys);
+	std::vector<ParticleSystem> GetParticleSystemList();
 	glm::mat4 GetModelMatrix();
 
-private:
+protected:
 	Model mModel;
 	glm::mat4 mModelMatrix;
 	Shader mShader;
 	Shader mParticleShader;
 
-	std::vector<ParticleSystem> particleSystemList;
+
 
 	sTrasformation mTranformation;
 };

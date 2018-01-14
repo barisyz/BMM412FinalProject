@@ -44,17 +44,26 @@ void Camera::MoveZ(float direction) {
 }
 void Camera::MoveForward(float direction) {
 
-	c_position += c_direction * direction / 5.0f;
+	glm::vec3 temp = c_direction * direction / 5.0f;
+	Movement(temp);
 }
 void Camera::MoveHorizontal(float direction) {
 
-	c_position += c_rightVector * direction / 5.0f;
+	glm::vec3 temp = c_rightVector * direction / 5.0f;
+	Movement(temp);
 }
 void Camera::MoveUpward(float direction) {
 
-	c_position += c_upVector * direction / 5.0f;
+	glm::vec3 temp = c_upVector * direction / 5.0f;
+	Movement(temp);
 }
+void Camera::Movement(glm::vec3 temp) {
 
+	glm::vec3 temp2 = c_position + temp;
+
+	if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5)
+		c_position += temp;
+}
 void Camera::Rotate(float ypos, float xpos) {
 
 	horizontalAngle += sensitivity * xpos;
@@ -94,7 +103,7 @@ void Camera::Roll() {
 	c_upVector = glm::cross(c_rightVector, c_direction);
 }
 
-void Camera::Render(Shader shader) {
+void Camera::Render(Shader shader, double deltatime) {
 	//c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)1024.0f / (float)768.0f, 0.0001f, 5000.0f);
 
 	c_viewMatrix = glm::lookAt(
@@ -106,7 +115,7 @@ void Camera::Render(Shader shader) {
 	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ViewMatrix"), 1, GL_FALSE, &this->c_viewMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ProjectionMatrix"), 1, GL_FALSE, &this->c_projectionMatrix[0][0]);
 
-	UpdateProcess();
+	UpdateProcess(deltatime);
 }
 
 const glm::mat4& Camera::getViewMatrix() const noexcept
@@ -149,31 +158,33 @@ void Camera::mouse_event(double xpos, double ypos)
 
 }
 
-void Camera::UpdateProcess()
+void Camera::UpdateProcess(double deltatime)
 {
+	float speed = 10 * deltatime;
+
 	if (key_events_buffer[GLFW_KEY_W])
 	{
-		MoveForward(0.005);
+		MoveForward(speed);
 	}
 	else if (key_events_buffer[GLFW_KEY_S])
 	{
-		MoveForward(-0.005);
+		MoveForward(-speed);
 	}
 	else if (key_events_buffer[GLFW_KEY_A])
 	{
-		MoveHorizontal(-0.005);
+		MoveHorizontal(-speed);
 	}
 	else if (key_events_buffer[GLFW_KEY_D])
 	{
-		MoveHorizontal(0.005);
+		MoveHorizontal(speed);
 	}
 	else if (key_events_buffer[GLFW_KEY_I])
 	{
-		MoveUpward(0.005);
+		MoveUpward(speed);
 	}
 	else if (key_events_buffer[GLFW_KEY_K])
 	{
-		MoveUpward(-0.005);
+		MoveUpward(-speed);
 	}
 
 	if (mouse_position_buffer[2] == 1) {
@@ -181,4 +192,12 @@ void Camera::UpdateProcess()
 		mouse_position_buffer[2] = 0;
 	}
 
+}
+
+bool Camera::Condition() {
+
+	if (c_position.y > -2 && c_position.y < 2)
+		return true;
+
+	return false;
 }

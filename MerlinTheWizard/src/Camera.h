@@ -26,13 +26,13 @@ public:
 	void MoveZ(float direction);
 
 	void Rotate(float verticalAngle, float horizontalAngle);
-	void Render(Shader shader);
+	void Render(Shader shader, double deltatime);
 	void Roll();
 
 	void keyboard_event(int key, int scancode, int action, int mode);
 	void mouse_event(double xpos, double ypos);
 
-	void UpdateProcess();
+	void UpdateProcess(double deltatime);
 
 	const glm::mat4& getViewMatrix()           const noexcept;
 	const glm::mat4& getProjMatrix()           const noexcept;
@@ -49,4 +49,7 @@ private:
 	double mouse_position_buffer[3];
 
 	float horizontalAngle, verticalAngle;
+
+	bool Condition();
+	void Movement(glm::vec3 temp);
 };
