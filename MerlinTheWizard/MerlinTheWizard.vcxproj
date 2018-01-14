@@ -162,9 +162,12 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Animation.cpp" />
+    <ClCompile Include="src\Spell.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Collider.h" />
+    <ClInclude Include="src\Spell.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\InputManager.h" />

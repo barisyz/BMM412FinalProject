@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "InputManager.h"
 #include "Entity.h"
+#include "Spell.h"
 #include "GLFW/glfw3.h"
 
 class SceneManager
@@ -13,6 +14,7 @@ public:
 	//~SceneManager();
 	void CreateScene();
 	void drawAll(double deltaTime);
+	void UpdateScene();
 	void CreateModels();
 private:
 	std::string ShaderBase = "res/shaders/";
@@ -21,7 +23,7 @@ private:
 	Shader particleShader;
 	Shader mSkinningShader;
 	std::vector<Entity> mEntityList;
-	std::vector<ParticleSystem> mParticleSystemList;
+	std::vector<Spell> mSpellList;
 	InputManager mInputManager;
 	Camera mCamera;
 	GLFWwindow* mWindow;
