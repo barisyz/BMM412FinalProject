@@ -16,6 +16,10 @@ public:
 	glm::vec3 c_upVector;
 	float sensitivity = 0.0010f;
 	glm::vec3 GetPosition();
+
+	Entity *spell;
+	CubeCollider pointCollider;
+
 	//Move commands
 	void MoveTo(glm::vec3 location);
 	void MoveForward(float direction);
@@ -33,11 +37,11 @@ public:
 	void mouse_event(double xpos, double ypos);
 
 	void UpdateProcess(double deltatime);
+	void SetVelocitySpell();
 
 	const glm::mat4& getViewMatrix()           const noexcept;
 	const glm::mat4& getProjMatrix()           const noexcept;
 	const glm::mat4& getProjectionViewMatrix() const noexcept;
-
 
 	//void scroll_event(double xoffset, double yoffset);
 private:
@@ -50,6 +54,6 @@ private:
 
 	float horizontalAngle, verticalAngle;
 
-	bool Condition();
+
 	void Movement(glm::vec3 temp);
 };

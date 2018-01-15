@@ -10,10 +10,13 @@ public:
 		collider.size = glm::vec3(0.1, 0.1, 0.1);
 	}
 
+	glm::vec3 velocity;
+
 	void Move(double deltaTime);
 	void SetVelocity(glm::vec3 velocity);
 	bool CheckCollusion(Entity *entity);
+	bool CheckCollusion(CubeCollider obj2);
 
 private:
-	glm::vec3 velocity;
+	
 };

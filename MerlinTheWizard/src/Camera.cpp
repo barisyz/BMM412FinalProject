@@ -18,6 +18,13 @@ Camera::Camera(int width, int height)
 
 	verticalAngle = 0;
 	horizontalAngle = 0;
+
+	pointCollider.initialized = true;
+	pointCollider.position = ((c_position + c_direction) + c_position) / 2;
+
+	pointCollider.size.x = abs(c_direction.x) * sqrtf((pointCollider.position.x - c_position.x) * (pointCollider.position.x - c_position.x));
+	pointCollider.size.y = abs(c_direction.y) * sqrtf((pointCollider.position.y - c_position.y) * (pointCollider.position.y - c_position.y));
+	pointCollider.size.z = abs(c_direction.z) * sqrtf((pointCollider.position.z - c_position.z) * (pointCollider.position.z - c_position.z));
 }
 
 glm::vec3 Camera::GetPosition()
@@ -61,7 +68,7 @@ void Camera::Movement(glm::vec3 temp) {
 
 	glm::vec3 temp2 = c_position + temp;
 
-	if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5)
+	if (temp2.y < 5 && temp2.y > 0 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 3.75)
 		c_position += temp;
 }
 void Camera::Rotate(float ypos, float xpos) {
@@ -111,7 +118,7 @@ void Camera::Render(Shader shader, double deltatime) {
 		c_position + c_direction, // and looks at some point
 		c_upVector  // Head is up (set to 0,-1,0 to look upside-down)
 	);
-
+	glm::vec3 aaaaa = c_position + c_direction;
 	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ViewMatrix"), 1, GL_FALSE, &this->c_viewMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ProjectionMatrix"), 1, GL_FALSE, &this->c_projectionMatrix[0][0]);
 
@@ -191,13 +198,14 @@ void Camera::UpdateProcess(double deltatime)
 		Rotate(mouse_position_buffer[1], mouse_position_buffer[0]);
 		mouse_position_buffer[2] = 0;
 	}
+	pointCollider.position = ((c_position + c_direction) + c_position) / 2;
 
+	pointCollider.size.x = abs(c_direction.x) * sqrtf((pointCollider.position.x - c_position.x) * (pointCollider.position.x - c_position.x));
+	pointCollider.size.y = abs(c_direction.y) * sqrtf((pointCollider.position.y - c_position.y) * (pointCollider.position.y - c_position.y));
+	pointCollider.size.z = abs(c_direction.z) * sqrtf((pointCollider.position.z - c_position.z) * (pointCollider.position.z - c_position.z));
 }
 
-bool Camera::Condition() {
-
-	if (c_position.y > -2 && c_position.y < 2)
-		return true;
-
-	return false;
+void Camera::SetVelocitySpell() {
+	
+	this->spell->SetVelocity(c_direction);
 }
