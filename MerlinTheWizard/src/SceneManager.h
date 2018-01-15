@@ -2,10 +2,9 @@
 #include "GL/glew.h"
 #include "Shader.h"
 #include "InputManager.h"
+#include "Entity.h"
 #include "Spell.h"
 #include "GLFW/glfw3.h"
-#include <fstream>
-#include <string>
 
 class SceneManager
 {
@@ -16,8 +15,6 @@ public:
 	void CreateScene();
 	void drawAll(double deltaTime);
 	void UpdateScene();
-
-
 private:
 	std::string ShaderBase = "shaders";
 	Shader mShader;

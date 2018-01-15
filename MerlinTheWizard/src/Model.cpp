@@ -41,16 +41,16 @@ bool Model::LoadModel(const char* Filename)
 			aiMaterial* mat = scene->mMaterials[i];
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_AMBIENT, &tempColor);
-			material.Ka = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
+			material.Ka = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &tempColor);
-			material.Kd = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
+			material.Kd = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &tempColor);
-			material.Ks = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
+			material.Ks = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_EMISSIVE, &tempColor);
-			material.Ke = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
+			material.Ke = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
 
 			aiGetMaterialFloatArray(mat, AI_MATKEY_SHININESS, &shininess, &max);
 			material.Ns = shininess / 4.0;

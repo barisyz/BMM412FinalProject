@@ -103,7 +103,3 @@ void Entity::InitiaizeCollider(glm::vec3 scale, bool initialized) {
 	this->collider.position = this->position;
 	this->collider.initialized = initialized;
 }
-void Entity::SetVelocity(glm::vec3 velocity) {
-
-	//do not use with enities. Use with spells only.
-}

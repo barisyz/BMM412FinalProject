@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+#include "Entity.h"
 #include "GLFW\glfw3.h"
 #include <iostream>
 
@@ -10,20 +11,11 @@ public:
 	InputManager(GLFWwindow* window, Camera* camera);
 	~InputManager();
 
-	static int rightFlag;
-	static int leftFlag;
-	static int full;
+	std::vector<Entity> *sceneEntityList;
 private:
 	GLFWwindow* mWindow;
 	Camera* mCamera;
 
-	static void setRight(int number) {
-		rightFlag = number;
-	}
-	static void setLeft(int number) {
-		leftFlag = number;
-		full = 0;
-	}
 
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
@@ -48,15 +40,12 @@ private:
 	}
 
 	static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-
+		
 		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-			setRight(1); setLeft(0);
+			
 		}
 		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-			setRight(0); setLeft(1);
 
-			Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
-			cam->SetVelocitySpell();
 		}
 
 	}
