@@ -19,7 +19,7 @@ Window::Window(int width, int height, const char* title)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
+
 	glfwMakeContextCurrent(mWindow);
 	glfwSetWindowSizeCallback(mWindow, WindowSizeCallback);
 
@@ -33,7 +33,7 @@ Window::Window(int width, int height, const char* title)
 
 	glfwGetFramebufferSize(mWindow, &width, &height);
 	glViewport(0, 0, width, height);
-	
+
 }
 
 Window::~Window()

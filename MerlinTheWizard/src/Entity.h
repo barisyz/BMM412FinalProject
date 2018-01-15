@@ -19,6 +19,7 @@ class Entity
 public:
 	std::vector<ParticleSystem> particleSystemList;
 
+	float theta;
 	CubeCollider collider;
 
 	Entity();
@@ -34,6 +35,8 @@ public:
 	void Rotate(glm::vec3 rotateVec, float angle);
 	void Scale(glm::vec3 scaleVec);
 
+	virtual void SetVelocity(glm::vec3 velocity);
+
 	void InitiaizeCollider(glm::vec3 scale, bool initialized = true);
 
 	void AddParticleSystem(ParticleSystem sys);
@@ -47,6 +50,8 @@ public:
 	glm::vec3 GetRotation();
 	void SetRotation(glm::vec3 rotation);
 	Model GetModel();
+
+
 private:
 	glm::vec3 mPosition;
 	glm::vec3 mScale;
@@ -56,7 +61,9 @@ private:
 	glm::mat4 mModelMatrix;
 	Shader mShader;
 	Shader mParticleShader;
-	
+	glm::vec3 velocity;
+
+
 	sTrasformation mTranformation;
 };
 

@@ -44,14 +44,14 @@ void Mesh::SetupMesh()
 	glGenBuffers(1, &mEBO);
 
 	glBindVertexArray(mVAO);
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
-	if (mBones.size() <= 0) 
+	if (mBones.size() <= 0)
 	{
 		glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
 	}
-	else 
+	else
 	{
 		glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex) + sizeof(VertexBoneData) * mBones.size(), NULL, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, mVertices.size() * sizeof(Vertex), &mVertices[0]);
@@ -61,7 +61,7 @@ void Mesh::SetupMesh()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(GLuint), &mIndices[0], GL_STATIC_DRAW);
 
-	if(mBones.size() > 0)
+	if (mBones.size() > 0)
 	{
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)0);
@@ -71,13 +71,13 @@ void Mesh::SetupMesh()
 
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, TexCoords));
-		
+
 		glEnableVertexAttribArray(3);
 		glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (GLvoid *)(mVertices.size() * sizeof(Vertex)));
-		
+
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)(mVertices.size() * sizeof(Vertex) + offsetof(VertexBoneData, Weights)));
-		
+
 		/*std::cout << "sizeof(Vertex):" << sizeof(Vertex) << "\n";
 		std::cout << "(GLvoid *)offsetof(Vertex, Normal)" << (GLvoid *)offsetof(Vertex, Normal) << "\n";
 		std::cout << "(GLvoid *)offsetof(Vertex, TexCoords)" << (GLvoid *)offsetof(Vertex, TexCoords) << "\n";

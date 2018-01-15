@@ -111,7 +111,7 @@ void Animation::ReadNodeHeirarchy(float time, const aiNode* pNode, const aiMatri
 		// Interpolate rotation and generate rotation transformation matrix
 		aiQuaternion RotationQ;
 		CalcInterpolatedRotation(RotationQ, time, pNodeAnim);
-		
+
 		aiMatrix4x4 RotationM = aiMatrix4x4(RotationQ.GetMatrix());
 		RotationM.d4 = 1.0f;
 
@@ -161,7 +161,7 @@ void Animation::CalcInterpolatedPosition(aiVector3D& Out, float time, const aiNo
 void Animation::CalcInterpolatedRotation(aiQuaternion& Out, float time, const aiNodeAnim* pNodeAnim)
 {
 	// we need at least two values to interpolate...
-	if (pNodeAnim->mNumRotationKeys == 1) 
+	if (pNodeAnim->mNumRotationKeys == 1)
 	{
 		Out = pNodeAnim->mRotationKeys[0].mValue;
 		return;
@@ -172,7 +172,7 @@ void Animation::CalcInterpolatedRotation(aiQuaternion& Out, float time, const ai
 	assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
 	float DeltaTime = (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
 	float Factor = (time - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
-//	assert(Factor >= 0.0f && Factor <= 1.0f);
+	//	assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiQuaternion& StartRotationQ = pNodeAnim->mRotationKeys[RotationIndex].mValue;
 	const aiQuaternion& EndRotationQ = pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
 	aiQuaternion::Interpolate(Out, StartRotationQ, EndRotationQ, Factor);
@@ -192,7 +192,7 @@ void Animation::CalcInterpolatedScaling(aiVector3D& Out, float time, const aiNod
 	assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
 	float DeltaTime = (float)(pNodeAnim->mScalingKeys[NextScalingIndex].mTime - pNodeAnim->mScalingKeys[ScalingIndex].mTime);
 	float Factor = (time - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
-//	assert(Factor >= 0.0f && Factor <= 1.0f);
+	//	assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiVector3D& Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
 	const aiVector3D& End = pNodeAnim->mScalingKeys[NextScalingIndex].mValue;
 	aiVector3D Delta = End - Start;

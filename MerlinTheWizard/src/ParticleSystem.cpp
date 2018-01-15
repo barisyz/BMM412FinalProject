@@ -65,7 +65,7 @@ void ParticleSystem::SetBuffers(Shader shader) {
 	this->vao = vao;
 	this->shader = shader.GetID();
 
-	
+
 }
 
 void ParticleSystem::UpdateBuffers() {
@@ -108,7 +108,7 @@ void ParticleSystem::Render(glm::vec3 rightVector, glm::vec3 upVector) {
 void ParticleSystem::MainLoop(glm::vec3 cameraPosition) {
 	this->looplife -= deltaTime;
 	int ParticlesCount = 0;
-	
+
 	for (int i = 0; i<MaxParticles; i++) {
 
 		Particle& p = particleContainer[i]; // shortcut
@@ -120,13 +120,13 @@ void ParticleSystem::MainLoop(glm::vec3 cameraPosition) {
 			if (p.life > 0.0f) {
 
 				// Simulate simple physics, can add size over lifetime
-				if(gravityEnable)
+				if (gravityEnable)
 					p.speed += this->gravityVec * (float)deltaTime;
 
 				p.position += p.speed * (float)deltaTime;
 				p.cameradistance = glm::length(p.position - cameraPosition);
 				p.cameradistance *= p.cameradistance;
-				
+
 
 			}
 			else {
@@ -149,27 +149,27 @@ void ParticleSystem::MainLoop(glm::vec3 cameraPosition) {
 
 int ParticleSystem::FindUnusedParticle() {
 
-		for (int i = lastUsedParticle; i<MaxParticles; i++) {
-			if (particleContainer[i].life < 0) {
-				lastUsedParticle = i;
-				return i;
-			}
+	for (int i = lastUsedParticle; i<MaxParticles; i++) {
+		if (particleContainer[i].life < 0) {
+			lastUsedParticle = i;
+			return i;
 		}
+	}
 
-		for (int i = 0; i< lastUsedParticle; i++) {
-			if (particleContainer[i].life < 0) {
-				lastUsedParticle = i;
-				return i;
-			}
+	for (int i = 0; i< lastUsedParticle; i++) {
+		if (particleContainer[i].life < 0) {
+			lastUsedParticle = i;
+			return i;
 		}
-		return 0;
-	
+	}
+	return 0;
+
 }
 
 void ParticleSystem::SortParticles() {
 	//sort according to camera distance (108. line)
 	std::sort(&particleContainer[0], &particleContainer[MaxParticles]);
-	
+
 }
 
 void ParticleSystem::CreateParticles() {
@@ -236,7 +236,7 @@ void ParticleSystem::CreateParticlesOnce() {
 
 		particleContainer[i].size = ((simple_rand() % 1000) / 2000.0f) * this->sizeMultiplier;
 
-	/*	cout << particleContainer[i].position.x; cout << " ";
+		/*	cout << particleContainer[i].position.x; cout << " ";
 		cout << particleContainer[i].position.y; cout << " ";
 		cout << particleContainer[i].position.z << endl;*/
 	}
@@ -248,26 +248,26 @@ glm::vec3 ParticleSystem::ChooseMainDir() {
 	glm::vec3 temp;
 	switch (this->maindirType)
 	{
-		case 0:
-			temp = glm::vec3(0, 1, 0);
-			break;
-		case 1: 
-		{
-			float a = dist(mt);
-			float b = dist2(mt);
-			float x = sphericalRadius * cos(a);
-			float y = sphericalRadius * sin(a);
+	case 0:
+		temp = glm::vec3(0, 1, 0);
+		break;
+	case 1:
+	{
+		float a = dist(mt);
+		float b = dist2(mt);
+		float x = sphericalRadius * cos(a);
+		float y = sphericalRadius * sin(a);
 
-			float z = sphericalRadius * cos(b);
-			x *= sin(b);
-			y *= sin(b);
+		float z = sphericalRadius * cos(b);
+		x *= sin(b);
+		y *= sin(b);
 
-			temp = glm::vec3(x, y, z);
-			break;
-		}
-		case 2:
-			temp = this->direction * 100;
-			break;
+		temp = glm::vec3(x, y, z);
+		break;
+	}
+	case 2:
+		temp = this->direction * 100;
+		break;
 
 	}
 
@@ -276,61 +276,61 @@ glm::vec3 ParticleSystem::ChooseMainDir() {
 
 glm::vec3 ParticleSystem::ChoosePositionType() {
 
-	switch (this->positionType) 
+	switch (this->positionType)
 	{
-		case 1:
-		{
-			std::uniform_real_distribution<double> dist3(0, circularRadius);
-			float a = dist(mt);
-			float x = dist3(mt) * cos(a);
-			float z = dist3(mt) * sin(a);
-			
-			glm::vec3 temp = glm::vec3(x, 0, z);
+	case 1:
+	{
+		std::uniform_real_distribution<double> dist3(0, circularRadius);
+		float a = dist(mt);
+		float x = dist3(mt) * cos(a);
+		float z = dist3(mt) * sin(a);
 
-			if (direction.x == -0.0f && direction.y == -0.0f && direction.z == -0.0f) {
+		glm::vec3 temp = glm::vec3(x, 0, z);
 
-				return temp + startPosition;
+		if (direction.x == -0.0f && direction.y == -0.0f && direction.z == -0.0f) {
+
+			return temp + startPosition;
+		}
+		else {
+			float b = glm::dot(glm::normalize(direction), glm::vec3(0, 1, 0));
+			float angle = glm::acos(b);
+
+
+			glm::vec3 normal = glm::cross(glm::normalize(direction), glm::vec3(0, 1, 0));
+			normal = glm::normalize(normal);
+
+			glm::vec3 temp2;
+			if (normal.x == normal.x) {
+
+				temp2 = glm::rotate(temp, angle, normal);
 			}
 			else {
-				float b = glm::dot(glm::normalize(direction), glm::vec3(0, 1, 0));
-				float angle = glm::acos(b);
-
-
-				glm::vec3 normal = glm::cross(glm::normalize(direction), glm::vec3(0, 1, 0));
-				normal = glm::normalize(normal);
-
-				glm::vec3 temp2;
-				if (normal.x == normal.x ) {
-
-					temp2 = glm::rotate(temp, angle, normal);
-				}
-				else {
-					temp2 = glm::rotate(temp, angle, glm::vec3(0, 1, 0));
-				}
-
-
-				return temp2 + startPosition;
+				temp2 = glm::rotate(temp, angle, glm::vec3(0, 1, 0));
 			}
 
-			break;
-		}
-		case 2: {
-			float a = dist(mt);
-			float b = dist2(mt);
-			float x = sphericalRadius * cos(a);
-			float y = sphericalRadius * sin(a);
 
-			float z = sphericalRadius * cos(b);
-			x *= sin(b);
-			y *= sin(b);
-
-			glm::vec3 temp = glm::vec3(x, y, z);
-			return temp + startPosition;
-			break;
+			return temp2 + startPosition;
 		}
-		default:
-			return startPosition;
-			break;
+
+		break;
+	}
+	case 2: {
+		float a = dist(mt);
+		float b = dist2(mt);
+		float x = sphericalRadius * cos(a);
+		float y = sphericalRadius * sin(a);
+
+		float z = sphericalRadius * cos(b);
+		x *= sin(b);
+		y *= sin(b);
+
+		glm::vec3 temp = glm::vec3(x, y, z);
+		return temp + startPosition;
+		break;
+	}
+	default:
+		return startPosition;
+		break;
 	}
 }
 
@@ -349,7 +349,7 @@ void ParticleSystem::SetStartVariables(float life, float sphericalRadius, float 
 	this->sphericalRadius = sphericalRadius;
 	this->circularRadius = circularRadius;
 	this->colour = colour;
-	
+
 }
 
 void ParticleSystem::SetStartPosition(glm::vec3 StartPosition) {

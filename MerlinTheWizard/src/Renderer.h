@@ -12,6 +12,8 @@ public:
 	Renderer(GLFWwindow* window);
 	~Renderer();
 	void RenderScene(double deltatime);
+
+
 private:
 	SceneManager mSceneManager;
 };

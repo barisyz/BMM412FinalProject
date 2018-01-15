@@ -8,6 +8,8 @@ SceneManager::SceneManager(GLFWwindow* window)
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 	mCamera = Camera(width, height);
+
+
 }
 
 SceneManager::SceneManager()
@@ -31,42 +33,10 @@ void SceneManager::CreateScene()
 	particleShader.LoadShader(particleVertexShaderPath.c_str(), particleFragmentShaderPath.c_str());
 
 	mInputManager = InputManager(mWindow, &mCamera);
-	mInputManager.sceneEntityList = &mEntityList;
 
 	CreateModels();
 
 	glEnable(GL_DEPTH_TEST);
-	
-	/*ParticleSystem sys3 = ParticleSystem(300);
-	sys3.SetBuffers(particleShader);
-	sys3.maindirType = 0;
-	sys3.SetStartVariables(2.0f, 10, 0.2f, glm::vec4(1, 0, 0, 1));
-	sys3.SetStartPosition(wizard.position - glm::vec3(0, 0.5, 0));
-	sys3.SetGravity(true);
-	sys3.positionType = 0;
-	sys3.SetTripleS(1, 0.3, 3);
-	sys3.randomdir = true;
-	wizard.AddParticleSystem(sys3);*/
-
-
-	/*ParticleSystem sys = ParticleSystem();
-	sys.SetBuffers(particleShader);
-	sys.maindirType = 1;
-	sys.SetStartVariables(0.5f, 10, 0.2f, glm::vec4(1, 0, 0, 1));
-	sys.SetStartPosition(mEntityList.at(1).position);
-	sys.positionType = 0;
-	sys.SetTripleS(0.1, 0.1, 0);
-	mEntityList.at(1).AddParticleSystem(sys);*/
-
-	/*ParticleSystem sys2 = ParticleSystem();
-	sys2.SetBuffers(particleShader);
-	sys2.maindirType = 1;
-	sys2.SetStartVariables(0.5f, 10, 0.2f, glm::vec4(1, 1, 0, 1));
-	sys2.SetStartPosition(mEntityList.at(2).position);
-	sys2.positionType = 0;
-	sys2.SetTripleS(0.1, 0.1, 0);
-	mEntityList.at(2).AddParticleSystem(sys2);
-*/
 }
 
 void SceneManager::drawAll(double deltaTime)
@@ -89,14 +59,16 @@ void SceneManager::drawAll(double deltaTime)
 
 	bool temp = false;
 	for (unsigned int i = 0; i < mSpellList.size(); i++) {
+		temp = false;
 		//cout << deltaTime << endl;
 		for (unsigned int j = 0; j < mEntityList.size(); j++) {
 			if (mSpellList[i].CheckCollusion(&mEntityList[j])) {
 				temp = true;
-				continue;
+				break;
 			}
 		}
-		if (!temp) {
+
+		if (!temp && mSpellList[i].renderable == 1) {
 			mSpellList[i].Move(deltaTime);
 			mSpellList[i].Render(deltaTime);
 		}
@@ -108,55 +80,36 @@ void SceneManager::drawAll(double deltaTime)
 
 	}
 
-	//for (unsigned int i = 0; i < mSpellList.size(); i++) {
-	//	//çalýþmamasý lazým ama çalýþýyo denediðim her koþulda xdé
-	//	if (mSpellList[i].GetParticleSystemList()[1].looplife <= 0)
-	//		mSpellList.erase(mSpellList.begin() + i);
-	//}
+
 }
 
 void SceneManager::UpdateScene() {
 
-	Spell rock = Spell("res/models/rock.obj", mShader);
-	rock.Scale(glm::vec3(0.2f, 0.2f, 0.1f));
-	rock.Translate(glm::vec3(-4.9f, 0.0f, 0.0f));
+	for (unsigned int i = 0; i < mSpellList.size(); i++) {
 
-	ParticleSystem sys2 = ParticleSystem();
-	sys2.SetBuffers(particleShader);
-	sys2.maindirType = 2;
-	sys2.SetStartVariables(0.4f, 0.1f, 0.1f, glm::vec4(0.71, 0, 0, 1));
-	sys2.SetStartPosition(rock.GetPosition());
-	sys2.SetGravity();
-	sys2.positionType = 2;
-	sys2.playable = false;
-	sys2.SetTripleS(2, 0.1f, 0);
-	rock.AddParticleSystem(sys2);
-
-	ParticleSystem sys = ParticleSystem();
-	sys.SetBuffers(particleShader);
-	sys.maindirType = 1;
-	sys.SetStartVariables(3.0f, 10, 0.2f, glm::vec4(1, 0, 0, 1));
-	sys.SetStartPosition(rock.GetPosition());
-	sys.SetGravity();
-	sys.positionType = 0;
-	sys.loop = false;
-	sys.playable = false;
-	sys.looplife = 4.0f;
-	sys.SetTripleS(0.1f, 0.1f, 0);
-	rock.AddParticleSystem(sys);
-
-	ParticleSystem sys3 = ParticleSystem(20);
-	sys3.SetBuffers(particleShader);
-	sys3.maindirType = 0;
-	sys3.SetStartVariables(0.2f, 0.15f, 0.1f, glm::vec4(0, 1, 0, 1));
-	sys3.SetStartPosition(rock.GetPosition());
-	sys3.SetGravity();
-	sys3.positionType = 2;
-	sys3.SetTripleS(1, 0.1f, 0);
-	rock.AddParticleSystem(sys3);
-
-	rock.SetVelocity(glm::vec3(0.5, 0.03, 0));
-	mSpellList.push_back(rock);
+		if (InputManager::rightFlag == 1) {
+			if (InputManager::full == 0) {
+				if (mSpellList[i].CheckCollusion(mCamera.pointCollider)) {
+					mCamera.spell = &mSpellList[i];
+					InputManager::full = 1;
+				}
+			}
+			else {
+				(&mCamera)->spell->SetPosition(mCamera.pointCollider.position);
+				(&mCamera)->spell->Rotate(glm::vec3(1, 1, 1), (&mCamera)->spell->theta * 180 / 3.14);
+				if ((&mCamera)->spell->theta < 360.0f)
+					(&mCamera)->spell->theta += 0.0001f;
+				else
+					(&mCamera)->spell->theta = 0.0f;
+			}
+		}
+		//BUG ÇIKARIYO XDééééééé
+		/*for (unsigned int i = 0; i < mSpellList.size(); i++) {
+		//çalýþmamasý lazým ama çalýþýyo denediðim her koþulda xdé
+		if (mSpellList[i].GetParticleSystemList()[1].looplife <= 0)
+		mSpellList.erase(mSpellList.begin() + i);
+		}*/
+	}
 }
 
 void SceneManager::CreateModels()
@@ -164,19 +117,20 @@ void SceneManager::CreateModels()
 	//model string
 	std::string wizardStr = ModelBase + "wizard.dae";
 	std::string cloudStr = ModelBase + "cloud.obj";
-	std::string mountainStr = ModelBase + "surface.obj";
+	std::string rockStr = ModelBase + "rock.obj";
+	std::string sceneStr = ModelBase + "completeScene.obj";
 	/*std::string wolfStr = ModelBase + "wolf1.dae";
 	std::string spiderStr = ModelBase + "spider.dae";*/
 
 	mPlayer = Player(wizardStr.c_str(), mSkinningShader);
 	//wizard.Rotate(glm::vec3(5.0, 4.0, 5.0), -90.0f);
 	mPlayer.Scale(glm::vec3(0.03f, 0.03f, 0.03f));
-	mPlayer.Translate(glm::vec3(0.0f, 0.52f, 0.3f));
-	mPlayer.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
+	mPlayer.Translate(glm::vec3(0.0f, 0.15f, 2.3f));
+	//mPlayer.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
 	mEntityList.push_back(mPlayer);
 
 
-	Entity cloud = Entity(cloudStr.c_str(), mShader);
+	/*Entity cloud = Entity(cloudStr.c_str(), mShader);
 	cloud.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
 	cloud.Translate(glm::vec3(-0.6, 3.0f, 0.0f));
 	mEntityList.push_back(cloud);
@@ -185,18 +139,112 @@ void SceneManager::CreateModels()
 	cloud1.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
 	cloud1.Translate(glm::vec3(0.0, 3.0f, 0.0f));
 	mEntityList.push_back(cloud1);
+	*/
+	Entity rock = Entity(rockStr.c_str(), mShader);
+	rock.Scale(glm::vec3(1, 1, 1));
+	rock.Translate(glm::vec3(-3.86f, 0, -0.6f));
+	rock.InitiaizeCollider(glm::vec3(0.7, 0.2, 0.8));
+	mEntityList.push_back(rock);
 
-	Entity cloud2 = Entity(cloudStr.c_str(), mShader);
-	cloud2.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-	cloud2.Translate(glm::vec3(0.6, 3.0f, 0.0f));
-	mEntityList.push_back(cloud2);
+	Entity rock2 = Entity(rockStr.c_str(), mShader);
+	rock2.Scale(glm::vec3(1, 1, 1));
+	rock2.Translate(glm::vec3(3.10f, 0, 0.52f));
+	rock2.InitiaizeCollider(glm::vec3(0.7, 0.2, 0.8));
+	mEntityList.push_back(rock2);
 
-	Entity mountain = Entity(mountainStr.c_str(), mShader);
-	mountain.Scale(glm::vec3(1.0, 0.1, 1.0));
-	mEntityList.push_back(mountain);
+	Entity scene = Entity(sceneStr.c_str(), mShader);
+	scene.Scale(glm::vec3(1.0, 1, 1.0));
+	scene.Translate(glm::vec3(1.0, -0.2, 0));
+
+	ParticleSystem volcano = ParticleSystem(1000);
+	volcano.SetBuffers(particleShader);
+	volcano.maindirType = 0;
+	volcano.SetStartVariables(3.0f, 10, 0.2f, glm::vec4(1, 0, 0, 1));
+	volcano.SetStartPosition(glm::vec3(10.5f, 5.37f, -6.95f));
+	volcano.SetGravity(true);
+	volcano.positionType = 0;
+	volcano.randomdir = true;
+	volcano.SetTripleS(1, 0.5f, 3);
+	scene.AddParticleSystem(volcano);
+
+	ParticleSystem fire1 = ParticleSystem(50);
+	fire1.SetBuffers(particleShader);
+	fire1.maindirType = 0;
+	fire1.SetStartVariables(1.2f, 10, 0.2f, glm::vec4(1, 0, 0, 1));
+	fire1.SetStartPosition(glm::vec3(-6.11f, 0.07f, 1.23f));
+	fire1.SetGravity();
+	fire1.positionType = 1;
+	fire1.SetTripleS(1, 0.2f, 0);
+	scene.AddParticleSystem(fire1);
+
+	ParticleSystem fire2 = ParticleSystem(30);
+	fire2.SetBuffers(particleShader);
+	fire2.maindirType = 0;
+	fire2.SetStartVariables(1, 10, 0.1f, glm::vec4(1, 0, 1, 1));
+	fire2.SetStartPosition(glm::vec3(-6.11f, 0.07f, 1.23f));
+	fire2.SetGravity();
+	fire2.positionType = 1;
+	fire2.SetTripleS(1, 0.2f, 0);
+	scene.AddParticleSystem(fire2);
+
+	mEntityList.push_back(scene);
+
+	std::string spell;
+	glm::vec4 colour;
+	for (int i = 0; i < 10; i++)
+	{
+
+		if (i < 5) {
+			spell = "res/models/sphere.obj";
+			colour = glm::vec4(1, 0, 0, 1);
+		}
+		else {
+			spell = "res/models/cone.obj";
+			colour = glm::vec4(0, 1, 0, 1);
+		}
+		Spell *fire1 = new Spell(spell.c_str(), mShader);
+		fire1->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+		fire1->Translate(glm::vec3(-2.0f + (float)i / 3, 0.1f, 0.0f));
+
+		ParticleSystem sys2 = ParticleSystem();
+		sys2.SetBuffers(particleShader);
+		sys2.maindirType = 2;
+		sys2.SetStartVariables(0.2f, 0.1f, 0.1f, colour);
+		sys2.SetStartPosition(fire1->GetPosition());
+		sys2.SetGravity();
+		sys2.positionType = 2;
+		sys2.playable = false;
+		sys2.SetTripleS(1, 0.1f, 0);
+		fire1->AddParticleSystem(sys2);
+
+		ParticleSystem sys = ParticleSystem();
+		sys.SetBuffers(particleShader);
+		sys.maindirType = 1;
+		sys.SetStartVariables(3.0f, 10, 0.2f, colour);
+		sys.SetStartPosition(fire1->GetPosition());
+		sys.SetGravity();
+		sys.positionType = 0;
+		sys.loop = false;
+		sys.playable = false;
+		sys.looplife = 4.0f;
+		sys.SetTripleS(0.1f, 0.1f, 0);
+		fire1->AddParticleSystem(sys);
+
+		ParticleSystem sys3 = ParticleSystem(20);
+		sys3.SetBuffers(particleShader);
+		sys3.maindirType = 0;
+		sys3.SetStartVariables(0.2f, 0.15f, 0.1f, colour);
+		sys3.SetStartPosition(fire1->GetPosition());
+		sys3.SetGravity();
+		sys3.positionType = 2;
+		sys3.SetTripleS(1, 0.1f, 0);
+		fire1->AddParticleSystem(sys3);
+
+		//fire1.SetVelocity(glm::vec3(0.5, 0.03, 0));
+		mSpellList.push_back(*fire1);
+	}
 
 	mCamera.AttachPlayer(&mEntityList[0]);
 
-	//UpdateScene();
 	glEnable(GL_DEPTH_TEST);
 }

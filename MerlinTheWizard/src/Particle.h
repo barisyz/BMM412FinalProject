@@ -16,7 +16,7 @@ struct Particle
 	}
 };
 
-class SquareParticle: public Particle {
+class SquareParticle : public Particle {
 
 public:
 	glm::vec3 data[4];
