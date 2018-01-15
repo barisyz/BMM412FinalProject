@@ -48,16 +48,16 @@ bool Model::LoadModel(const aiScene* scene)
 			aiMaterial* mat = scene->mMaterials[i];
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_AMBIENT, &tempColor);
-			material.Ka = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
+			material.Ka = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &tempColor);
-			material.Kd = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
+			material.Kd = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &tempColor);
-			material.Ks = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
+			material.Ks = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
 
 			aiGetMaterialColor(mat, AI_MATKEY_COLOR_EMISSIVE, &tempColor);
-			material.Ke = glm::vec4(tempColor.r, tempColor.b, tempColor.g, tempColor.a);
+			material.Ke = glm::vec4(tempColor.r, tempColor.g, tempColor.b, tempColor.a);
 
 			aiGetMaterialFloatArray(mat, AI_MATKEY_SHININESS, &shininess, &max);
 			material.Ns = shininess / 4.0;
@@ -73,7 +73,6 @@ bool Model::LoadModel(const aiScene* scene)
 void Model::ApplyMaterial(unsigned int materialIndex, Shader shader)
 {
 	sMaterial mat = mMaterials[materialIndex];
-
 	glUniform4fv(glGetUniformLocation(shader.GetID(), "Ka"), 1, &mat.Ka[0]);
 	glUniform4fv(glGetUniformLocation(shader.GetID(), "Ks"), 1, &mat.Ks[0]);
 	glUniform4fv(glGetUniformLocation(shader.GetID(), "Kd"), 1, &mat.Kd[0]);
@@ -88,9 +87,9 @@ void Model::Draw(Shader shader, float time)
 		{
 			mAnimation.SetupBonesLocation(shader.GetID());
 		}
+		
 		float RunningTime = (float)((double)glfwGetTime() - (double)time);
 		mAnimation.MakeBoneTransform(RunningTime);
-		
 	}
 
 	for (unsigned int i = 0; i < mMeshes.size(); i++)

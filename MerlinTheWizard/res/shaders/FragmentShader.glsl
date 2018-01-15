@@ -23,8 +23,8 @@ void main()
 
 	vec4 Diffuse = max(dot(L, N), 0.0) * Kd * LightColor;
 	vec4 Specular = pow(max(dot(N, H), 0.0), Shininess) * Ks * LightColor;
-	vec4 Ambient = vec4(0.1, 0.1, 0.1, 1.0) * Ka;
+	vec4 Ambient = vec4(0.1f, 0.1f, 0.1f, 1.0f) * Ka;
 
-	fColor = Ambient +  Specular +  Diffuse;
+	fColor = (Ambient +  Specular +  Diffuse);
 	fColor.a = 1.0;
 }

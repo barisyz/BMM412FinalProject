@@ -26,6 +26,7 @@ private:
 	std::vector<Spell> mSpellList;
 	InputManager mInputManager;
 	Camera mCamera;
+	Player mPlayer;
 	GLFWwindow* mWindow;
 };
 

@@ -21,9 +21,9 @@ void main()
 
 	vec3 H = normalize(L + E);
 
-	vec4 Diffuse = max(dot(L, N), 0.0) * Kd * LightColor;
-	vec4 Specular = pow(max(dot(N, H), 0.0), Shininess) * Ks * LightColor;
-	vec4 Ambient = vec4(0.5, 0.5, 0.5, 1.0) * Ka;
+	vec4 Diffuse = LightColor * (max(dot(L, N), 0.0) * Kd); 
+	vec4 Specular = LightColor * (pow(max(dot(N, H), 0.0), Shininess) * Ks);
+	vec4 Ambient = LightColor * Ka;
 
 	fColor = Ambient +  Specular +  Diffuse;
 	fColor.a = 1.0;

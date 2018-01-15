@@ -1,4 +1,6 @@
-#pragma once
+#ifndef ENTITIY_H
+#define ENTITIY_H
+
 #include "Model.h"
 #include "glm\mat4x4.hpp"
 #include "glm\gtc\matrix_transform.hpp"
@@ -15,18 +17,18 @@ struct sTrasformation
 class Entity
 {
 public:
-	glm::vec3 position;
-	glm::vec3 scale;
-	glm::vec3 rotation;
 	std::vector<ParticleSystem> particleSystemList;
 
 	CubeCollider collider;
 
 	Entity();
-	Entity(const char * fileName, Shader shader, Shader particleShader);
+	Entity(const char * fileName, Shader shader);
 	//~Entity();
 	void Render(double deltaTime);
 	void RenderParticles(double deltatime, glm::vec3 cameraPos, glm::vec3 cameraUp, glm::vec3 cameraRight);
+
+	void SetParticleShader(Shader particleShader);
+	Shader GetParticleShader();
 
 	void Translate(glm::vec3 translateVec);
 	void Rotate(glm::vec3 rotateVec, float angle);
@@ -38,15 +40,24 @@ public:
 	std::vector<ParticleSystem> GetParticleSystemList();
 	GLuint GetShader();
 	glm::mat4 GetModelMatrix();
+	glm::vec3 GetPosition();
+	void SetPosition(glm::vec3 position);
+	glm::vec3 GetScale();
+	void SetScale(glm::vec3 scale);
+	glm::vec3 GetRotation();
+	void SetRotation(glm::vec3 rotation);
+	Model GetModel();
+private:
+	glm::vec3 mPosition;
+	glm::vec3 mScale;
+	glm::vec3 mRotation;
 
-protected:
 	Model mModel;
 	glm::mat4 mModelMatrix;
 	Shader mShader;
 	Shader mParticleShader;
-
-
-
+	
 	sTrasformation mTranformation;
 };
 
+#endif // !ENTITIY_H

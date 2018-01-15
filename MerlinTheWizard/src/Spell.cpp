@@ -2,23 +2,24 @@
 
 
 void Spell::Move(double deltaTime) {
+	glm::vec3 pos = GetPosition();
+	if (pos.y < 5 && pos.y > -5 && sqrt(pos.x * pos.x + pos.z * pos.z) < 5) {
 
-	if (position.y < 5 && position.y > -5 && sqrt(position.x * position.x + position.z * position.z) < 5) {
+		pos += velocity * deltaTime;
+		collider.position = pos;
 
-		this->position += this->velocity * deltaTime;
-		this->collider.position = this->position;
-
-		Translate(this->position);
+		Translate(pos);
 
 		for (unsigned i = 0; i < particleSystemList.size(); i++)
 		{
-			particleSystemList[i].SetStartPosition(this->position);
-			particleSystemList[i].direction = -this->velocity * deltaTime;
+			particleSystemList[i].SetStartPosition(pos);
+			particleSystemList[i].direction = -velocity * deltaTime;
 		}
+		SetPosition(pos);
 		return;
 	}
 
-	mModel.~Model();
+	GetModel().~Model();
 
 	particleSystemList[0].playable = false;
 	particleSystemList[1].playable = true;
@@ -46,7 +47,7 @@ bool Spell::CheckCollusion(Entity *entity) {
 			//check the Z axis
 			if (abs(collider.position.z - obj2.position.z) < collider.size.z  + obj2.size.z)
 			{
-				mModel.~Model();
+				GetModel().~Model();
 
 				particleSystemList[0].playable = false;
 				particleSystemList[1].playable = true;

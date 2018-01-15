@@ -2,7 +2,7 @@
 
 Entity::Entity()
 {
-	collider.position = this->position;
+	collider.position = GetPosition();
 	collider.size = glm::vec3(0.1, 0.1, 0.1);
 	collider.initialized = false;
 
@@ -12,14 +12,12 @@ Entity::Entity()
 	mModelMatrix = glm::mat4();
 }
 
-Entity::Entity(const char * modelPath, Shader shader, Shader particleShader)
+Entity::Entity(const char * modelPath, Shader shader)
 {
-	collider.position = this->position;
+	collider.position = GetPosition();
 	collider.size = glm::vec3(0.1, 0.1, 0.1);
 	collider.initialized = false;
-
 	mShader = shader;
-	mParticleShader = particleShader;
 	mTranformation = { glm::mat4(), glm::mat4(), glm::mat4() };
 	mModelMatrix = glm::mat4();
 	mModel = Model(modelPath);
@@ -55,9 +53,17 @@ void Entity::RenderParticles(double deltatime, glm::vec3 cameraPos, glm::vec3 ca
 			this->particleSystemList[i].MainLoop(cameraPos);
 			this->particleSystemList[i].Render(cameraRight, cameraUp);
 		}
-	
 	}
+}
 
+void Entity::SetParticleShader(Shader particleShader)
+{
+	mParticleShader = particleShader;
+}
+
+Shader Entity::GetParticleShader()
+{
+	return mParticleShader;
 }
 
 glm::mat4 Entity::GetModelMatrix()
@@ -65,25 +71,60 @@ glm::mat4 Entity::GetModelMatrix()
 	return mModelMatrix;
 }
 
+glm::vec3 Entity::GetPosition()
+{
+	return mPosition;
+}
+
+void Entity::SetPosition(glm::vec3 position)
+{
+	mPosition = position;
+}
+
+glm::vec3 Entity::GetScale()
+{
+	return mScale;
+}
+
+void Entity::SetScale(glm::vec3 scale)
+{
+	mScale = scale;
+}
+
+glm::vec3 Entity::GetRotation()
+{
+	return mRotation;
+}
+
+void Entity::SetRotation(glm::vec3 rotation)
+{
+	mRotation = rotation;
+}
+
+Model Entity::GetModel()
+{
+	return mModel;
+}
+
 void Entity::Translate(glm::vec3 translateVec)
 {
 	mTranformation.TranslationMatrix = glm::translate(glm::mat4(), translateVec);
-	this->position = translateVec;
-	this->collider.position = this->position;
-	//mModelMatrix = mglm::translate(mModelMatrix, translateVec);
+	SetPosition(translateVec);
+	collider.position = translateVec;
+	mModelMatrix = glm::translate(mModelMatrix, translateVec);
 }
 
 void Entity::Rotate(glm::vec3 rotateVec, float angle)
 {
 	mTranformation.RotationMatrix = glm::rotate(glm::mat4(), angle, rotateVec);
-	this->rotation = rotateVec * angle; //?
+	SetRotation(rotateVec * angle);
 	//mModelMatrix = glm::rotate(mModelMatrix, angle, rotateVec);
 }
 
 void Entity::Scale(glm::vec3 scaleVec)
 {
 	mTranformation.ScalingMatrix = glm::scale(glm::mat4(), scaleVec);
-	this->scale = scaleVec;
+	SetScale(scaleVec);
 	//mModelMatrix = glm::scale(mModelMatrix, scaleVec);
 }
 
@@ -104,6 +145,7 @@ std::vector<ParticleSystem> Entity::GetParticleSystemList() {
 void Entity::InitiaizeCollider(glm::vec3 scale, bool initialized) {
 
 	this->collider.size = scale;
-	this->collider.position = this->position;
+	this->collider.position = GetPosition();
 	this->collider.initialized = initialized;
 }
+

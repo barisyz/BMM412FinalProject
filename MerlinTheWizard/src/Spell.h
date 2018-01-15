@@ -1,12 +1,11 @@
 #include "Entity.h"
 
-
-class Spell:public Entity {
+class Spell: public Entity {
 
 public:
 	//call super class contructor
-	Spell(const char *fileName, Shader shader, Shader particleShader):Entity(fileName, shader, particleShader) {
-		collider.position = this->position;
+	Spell(const char *fileName, Shader shader):Entity(fileName, shader) {
+		collider.position = GetPosition();
 		collider.size = glm::vec3(0.1, 0.1, 0.1);
 	}
 
