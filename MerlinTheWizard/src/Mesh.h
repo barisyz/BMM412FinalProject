@@ -7,10 +7,15 @@
 #include <vector>
 #include <iostream>
 
-
-#define BUFFER_OFFSET(i) ((void*)(i))
+#define NUM_BONES_PER_VERTEX 3
 
 using namespace std;
+
+struct VertexBoneData
+{
+	GLuint IDs[NUM_BONES_PER_VERTEX];
+	float Weights[NUM_BONES_PER_VERTEX];
+};
 
 struct Vertex
 {
@@ -26,7 +31,7 @@ class Mesh
 {
 public:
 	Mesh();
-	Mesh(vector<Vertex> vertices, vector<GLuint> indices);
+	Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<VertexBoneData> bones);
 	~Mesh();
 	void Draw(Shader shader);
 	void SetMaterialIndex(unsigned int materialIndex);
@@ -34,6 +39,7 @@ public:
 private:
 	vector<Vertex> mVertices;
 	vector<GLuint> mIndices;
+	vector<VertexBoneData> mBones;
 	unsigned int mMaterialIndex;
 	GLuint mVAO, mVBO, mEBO;
 	

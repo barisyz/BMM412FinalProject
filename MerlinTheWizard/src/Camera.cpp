@@ -8,7 +8,7 @@ Camera::Camera()
 
 Camera::Camera(int width, int height)
 {
-	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.001f, 2000.0f);
+	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.025f, 2000.0f);
 
 	//example start state
 	c_position = { 0, 0, -1 };
@@ -20,9 +20,33 @@ Camera::Camera(int width, int height)
 	horizontalAngle = 0;
 }
 
+void Camera::AttachPlayer(Entity* player)
+{
+	mPlayer = player;
+}
+
+void Camera::FollowPlayer()
+{
+	c_position = mPlayer->GetPosition() - c_offset;
+	
+	c_direction = { 0, 0, 1 };
+	c_upVector = { 0, 1, 0 };
+	c_rightVector = { -1, 0, 0 };
+}
+
+Entity* Camera::GetPlayer()
+{
+	return mPlayer;
+}
+
 glm::vec3 Camera::GetPosition()
 {
 	return c_position;
+}
+
+void Camera::SetPosition(glm::vec3 position)
+{
+	c_position = position;
 }
 
 void Camera::MoveTo(glm::vec3 location) {
@@ -33,6 +57,7 @@ void Camera::MoveTo(glm::vec3 location) {
 void Camera::MoveX(float direction) {
 
 	c_position.x += direction / 5.0f;
+
 }
 void Camera::MoveY(float direction) {
 
@@ -53,35 +78,73 @@ void Camera::MoveHorizontal(float direction) {
 	Movement(temp);
 }
 void Camera::MoveUpward(float direction) {
-
-	glm::vec3 temp = c_upVector * direction / 5.0f;
-	Movement(temp);
+	if (mFreeMode)
+	{
+		glm::vec3 temp = c_upVector * direction / 5.0f;
+		Movement(temp);
+	}
 }
 void Camera::Movement(glm::vec3 temp) {
 
 	glm::vec3 temp2 = c_position + temp;
 
-	if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5)
-		c_position += temp;
+	if (!mFreeMode)
+	{
+		if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5) {
+			temp.y = 0.0;
+			c_position += temp;
+		}
+	
+		mPlayer->Translate(c_position + c_offset);
+	}
+	else
+	{
+		if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5)
+			c_position += temp;
+	}
+		
 }
 void Camera::Rotate(float ypos, float xpos) {
-
 	horizontalAngle += sensitivity * xpos;
 	verticalAngle += sensitivity * ypos;
-
-	c_direction = glm::vec3(
+	
+	glm::vec3 direction = glm::vec3(
 		cos(verticalAngle) * sin(horizontalAngle),
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
 	);
 
-	c_rightVector = glm::vec3(
+	glm::vec3 rightVector = glm::vec3(
 		sin(horizontalAngle - 3.14f / 2.0f),
 		0,
 		cos(horizontalAngle - 3.14f / 2.0f)
 	);
 
-	c_upVector = glm::cross(c_rightVector, c_direction);
+	glm::vec3 upVector = glm::cross(c_rightVector, c_direction);
+
+	if (!mFreeMode) {
+		if ((direction.y > -0.4) || (direction.y < 0.4))
+		{
+			c_direction = direction;
+			c_rightVector = rightVector;
+			c_upVector = upVector;
+			//std::cout << "c_direction: " << c_direction.x << " " << c_direction.y << " " << c_direction.z << " " << "\n";
+			//std::cout << "c_rightVector: " << c_rightVector.x << " " << c_rightVector.y << " " << c_rightVector.z << " " << "\n";
+			//std::cout << "c_upVector: " << c_upVector.x << " " << c_upVector.y << " " << c_upVector.z << " " << "\n";
+
+			glm::vec3 rotation = glm::vec3(0, c_viewMatrix[1][1], 0);
+			
+			mPlayer->Rotate(rotation, horizontalAngle/2.0f);
+		}
+	}
+	else
+	{
+		c_direction = direction;
+
+		c_rightVector = rightVector;
+
+		c_upVector = upVector;
+	}
 
 	//this->rotation = c_direction;
 
@@ -103,7 +166,7 @@ void Camera::Roll() {
 	c_upVector = glm::cross(c_rightVector, c_direction);
 }
 
-void Camera::Render(Shader shader, double deltatime) {
+void Camera::Render(GLuint shader, double deltatime) {
 	//c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)1024.0f / (float)768.0f, 0.0001f, 5000.0f);
 
 	c_viewMatrix = glm::lookAt(
@@ -112,8 +175,8 @@ void Camera::Render(Shader shader, double deltatime) {
 		c_upVector  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 
-	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ViewMatrix"), 1, GL_FALSE, &this->c_viewMatrix[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), "ProjectionMatrix"), 1, GL_FALSE, &this->c_projectionMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "ViewMatrix"), 1, GL_FALSE, &this->c_viewMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "ProjectionMatrix"), 1, GL_FALSE, &this->c_projectionMatrix[0][0]);
 
 	UpdateProcess(deltatime);
 }
@@ -133,18 +196,27 @@ const glm::mat4& Camera::getProjectionViewMatrix() const noexcept
 	return c_projViewMatrix;
 }
 
+bool Camera::IsInFreeMode()
+{
+	return mFreeMode;
+}
+
+void Camera::ToogleCamera()
+{
+	mFreeMode = !mFreeMode;
+
+	if (!mFreeMode) {
+		FollowPlayer();
+	}
+}
+
 void Camera::keyboard_event(int key, int scancode, int action, int mode)
 {
-
-	if (key == GLFW_KEY_F) {
-		//todo camera toogle
-	}
 
 	if (action == GLFW_PRESS) {
 		key_events_buffer[key] = true;
 	}
 	else if (action == GLFW_RELEASE) {
-
 		key_events_buffer[key] = false;
 	}
 }
@@ -154,13 +226,11 @@ void Camera::mouse_event(double xpos, double ypos)
 	mouse_position_buffer[0] = xpos;
 	mouse_position_buffer[1] = ypos;
 	mouse_position_buffer[2] = 1;
-
-
 }
 
 void Camera::UpdateProcess(double deltatime)
 {
-	float speed = 10 * deltatime;
+	float speed = 1 * deltatime;
 
 	if (key_events_buffer[GLFW_KEY_W])
 	{

@@ -51,6 +51,12 @@
     <ClCompile Include="src\Spell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -86,25 +92,33 @@
     <ClInclude Include="src\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Spell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\BasicVertex.glsl">
+    <None Include="res\shaders\BasicVertex.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="shaders\FragmentShader.glsl">
+    <None Include="res\shaders\FragmentShader.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="shaders\particle.frag">
+    <None Include="res\shaders\particle.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="shaders\particle.vert">
+    <None Include="res\shaders\particle.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\shaders\SkinningVertex.glsl" />
+    <None Include="res\shaders\SkinningFrag.glsl" />
   </ItemGroup>
 </Project>

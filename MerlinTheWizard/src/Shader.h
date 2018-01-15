@@ -10,8 +10,8 @@ public:
 	~Shader();
 	void LoadShader(const char* vertexPath, const char* fragmentPath);
 	void Use();
+	void Use(GLuint id);
 	GLuint GetID();
-	void SetUniform();
 private:
 	GLuint mID;
 	const char* ReadShaderFile(const char* path);

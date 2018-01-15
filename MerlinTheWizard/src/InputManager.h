@@ -22,9 +22,21 @@ private:
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
 		}
-
+		
 		Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
+
+		if (key == GLFW_KEY_F && action == GLFW_PRESS)
+		{
+			cam->ToogleCamera();
+
+			if (cam->IsInFreeMode())
+			{
+				cam->FollowPlayer();
+			}
+		}
+		
 		cam->keyboard_event(key, scancode, action, mods);
+		
 	}
 
 	static void mouse_callback(GLFWwindow *window, double xpos, double ypos) {

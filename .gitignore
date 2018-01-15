@@ -240,3 +240,10 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/MerlinTheWizard/res/models/wizard.fbx
+/MerlinTheWizard/res/models/untitled.ogex
+/MerlinTheWizard/res/models/wizard1.dae
+/MerlinTheWizard/res/models/wizarddeneme.dae
+/MerlinTheWizard/res/models/wizardonly.dae
+/MerlinTheWizard/res/models/wizardRestPoseChanged.dae
+/MerlinTheWizard/res/models/wizard.dae
