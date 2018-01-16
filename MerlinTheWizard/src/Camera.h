@@ -10,9 +10,9 @@ class Camera
 public:
 	Camera();
 	Camera(int width, int height);
-	void AttachPlayer(Entity* player);
+	void AttachPlayer(Player * player);
 	void FollowPlayer();
-	Entity* GetPlayer();
+	Player* GetPlayer();
 	glm::vec3 c_position;
 	glm::vec3 c_direction;
 	glm::vec3 c_rightVector;
@@ -47,14 +47,14 @@ public:
 	void ToogleCamera();
 	//void scroll_event(double xoffset, double yoffset);
 private:
-	Entity* mPlayer;
+	Player* mPlayer;
 	glm::mat4 c_projectionMatrix;
 	glm::mat4 c_viewMatrix;
 	glm::mat4 c_projViewMatrix;
 	bool mFreeMode = true;
 	bool key_events_buffer[1024] = { 0 };
 	double mouse_position_buffer[3];
-
+	float mSpeedConstant = 10;
 	float horizontalAngle, verticalAngle;
 	
 	bool Condition();

@@ -36,7 +36,6 @@ private:
 		}
 		
 		cam->keyboard_event(key, scancode, action, mods);
-		
 	}
 
 	static void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
@@ -52,12 +51,13 @@ private:
 	}
 
 	static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-		
+		Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
+
 		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-			
+			cam->GetPlayer()->CastSkill();
 		}
 		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-
+			cam->GetPlayer()->GetModelPointer()->GetAnimationPointer()->SetAnimation("skillCast");
 		}
 
 	}

@@ -75,7 +75,7 @@ void SceneManager::drawAll(double deltaTime)
 	mCamera.Render(particleShader.GetID(), deltaTime);
 
 	GLuint currentShader = -1;
-
+	//Models
 	for (unsigned int i = 0; i < mEntityList.size(); i++) {
 		if (currentShader != mEntityList[i].GetShader())
 		{
@@ -86,7 +86,14 @@ void SceneManager::drawAll(double deltaTime)
 		mEntityList[i].Render(deltaTime);
 		mEntityList[i].RenderParticles(deltaTime, mCamera.c_position, mCamera.c_upVector, mCamera.c_rightVector);
 	}
+	
+	//Player
+	glUseProgram(mPlayer.GetShader());
+	mCamera.Render(mPlayer.GetShader(), deltaTime);
+	mPlayer.Render(deltaTime);
+	mPlayer.Update(deltaTime);
 
+	//Spells
 	bool temp = false;
 	for (unsigned int i = 0; i < mSpellList.size(); i++) {
 		//cout << deltaTime << endl;
@@ -164,7 +171,7 @@ void SceneManager::CreateModels()
 	//model string
 	std::string wizardStr = ModelBase + "wizard.dae";
 	std::string cloudStr = ModelBase + "cloud.obj";
-	std::string mountainStr = ModelBase + "surface.obj";
+	std::string sceneStr = ModelBase + "completeScene.obj";
 	/*std::string wolfStr = ModelBase + "wolf1.dae";
 	std::string spiderStr = ModelBase + "spider.dae";*/
 
@@ -173,8 +180,12 @@ void SceneManager::CreateModels()
 	mPlayer.Scale(glm::vec3(0.03f, 0.03f, 0.03f));
 	mPlayer.Translate(glm::vec3(0.0f, 0.52f, 0.3f));
 	mPlayer.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
-	mEntityList.push_back(mPlayer);
 
+	mPlayer.GetModelPointer()->AddAnimationInfo("walk", 0, 3, 0.80f);
+	mPlayer.GetModelPointer()->AddAnimationInfo("skillCast", 3, 5, 0.80f);
+	mPlayer.GetModelPointer()->AddAnimationInfo("idle", 1, 1, 0.50f);
+
+	//mEntityList.push_back(aPlayer);
 
 	Entity cloud = Entity(cloudStr.c_str(), mShader);
 	cloud.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
@@ -191,11 +202,11 @@ void SceneManager::CreateModels()
 	cloud2.Translate(glm::vec3(0.6, 3.0f, 0.0f));
 	mEntityList.push_back(cloud2);
 
-	Entity mountain = Entity(mountainStr.c_str(), mShader);
-	mountain.Scale(glm::vec3(1.0, 0.1, 1.0));
-	mEntityList.push_back(mountain);
+	Entity scene = Entity(sceneStr.c_str(), mShader);
+	scene.Scale(glm::vec3(1.0, 1.0, 1.0));
+	mEntityList.push_back(scene);
 
-	mCamera.AttachPlayer(&mEntityList[0]);
+	mCamera.AttachPlayer(&mPlayer);
 
 	//UpdateScene();
 	glEnable(GL_DEPTH_TEST);

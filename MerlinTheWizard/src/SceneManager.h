@@ -1,10 +1,13 @@
-#pragma once
+#ifndef SCENE_MANAGER_H
+#define SCENE_MANAGER_H
+
 #include "GL/glew.h"
 #include "Shader.h"
 #include "InputManager.h"
 #include "Entity.h"
 #include "Spell.h"
 #include "GLFW/glfw3.h"
+#include <string.h>
 
 class SceneManager
 {
@@ -29,4 +32,5 @@ private:
 	Player mPlayer;
 	GLFWwindow* mWindow;
 };
+#endif // !SCENE_MANAGER_H
 

@@ -12,8 +12,12 @@ public:
 
 	void keyboard_event(int key, int scancode, int action, int mode);
 	void Move(glm::vec3 pos);
-	void Update();
+	bool IsPlayerCastingSkill();
+	void Update(float deltaTime);
+	void CastSkill();
 private:
+	bool mIsPlayerCastingSkill = false;
+	float mAnimDuration = 0.0f;
 	bool key_events_buffer[1024] = { 0 };
 };
 #endif // !PLAYER_H

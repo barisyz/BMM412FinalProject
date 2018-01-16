@@ -86,10 +86,15 @@ void Model::Draw(Shader shader, float time)
 		if (!mAnimation.IsLocationSetted())
 		{
 			mAnimation.SetupBonesLocation(shader.GetID());
+			mAnimation.MakeBoneTransform(0);
 		}
 		
-		float RunningTime = (float)((double)glfwGetTime() - (double)time);
-		mAnimation.MakeBoneTransform(RunningTime);
+		if (mAnimation.IsAnimatedInThisFrame())
+		{
+			float RunningTime = (float)((double)glfwGetTime() - (double)time);
+			mAnimation.MakeBoneTransform(RunningTime);
+			mAnimation.StopAnimation();
+		}
 	}
 
 	for (unsigned int i = 0; i < mMeshes.size(); i++)
@@ -194,3 +199,12 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	return Mesh(vertices, indices, bones);
 }
 
+Animation* Model::GetAnimationPointer()
+{
+	return &mAnimation;
+}
+
+void Model::AddAnimationInfo(std::string name, unsigned int startKey, unsigned int endKey, float duration)
+{
+	mAnimation.AddAnimationInfo(name, startKey, endKey, duration);
+}

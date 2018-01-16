@@ -20,7 +20,7 @@ Camera::Camera(int width, int height)
 	horizontalAngle = 0;
 }
 
-void Camera::AttachPlayer(Entity* player)
+void Camera::AttachPlayer(Player* player)
 {
 	mPlayer = player;
 }
@@ -34,7 +34,7 @@ void Camera::FollowPlayer()
 	c_rightVector = { -1, 0, 0 };
 }
 
-Entity* Camera::GetPlayer()
+Player* Camera::GetPlayer()
 {
 	return mPlayer;
 }
@@ -90,12 +90,15 @@ void Camera::Movement(glm::vec3 temp) {
 
 	if (!mFreeMode)
 	{
-		if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5) {
-			temp.y = 0.0;
-			c_position += temp;
-		}
-	
-		mPlayer->Translate(c_position + c_offset);
+		if (!mPlayer->IsPlayerCastingSkill())
+		{
+			if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5) {
+				temp.y = 0.0;
+				c_position += temp;
+			}
+
+			mPlayer->Move(c_position + c_offset);
+		}		
 	}
 	else
 	{
@@ -123,7 +126,7 @@ void Camera::Rotate(float ypos, float xpos) {
 	glm::vec3 upVector = glm::cross(c_rightVector, c_direction);
 
 	if (!mFreeMode) {
-		if ((direction.y > -0.4) || (direction.y < 0.4))
+		if ((direction.y <= 1.0))
 		{
 			c_direction = direction;
 			c_rightVector = rightVector;
@@ -134,7 +137,7 @@ void Camera::Rotate(float ypos, float xpos) {
 
 			glm::vec3 rotation = glm::vec3(0, c_viewMatrix[1][1], 0);
 			
-			mPlayer->Rotate(rotation, horizontalAngle/2.0f);
+			mPlayer->Rotate(rotation, horizontalAngle);
 		}
 	}
 	else
@@ -204,7 +207,7 @@ bool Camera::IsInFreeMode()
 void Camera::ToogleCamera()
 {
 	mFreeMode = !mFreeMode;
-
+	mSpeedConstant = mFreeMode ? 10.0f : 1.0f;
 	if (!mFreeMode) {
 		FollowPlayer();
 	}
@@ -230,7 +233,7 @@ void Camera::mouse_event(double xpos, double ypos)
 
 void Camera::UpdateProcess(double deltatime)
 {
-	float speed = 1 * deltatime;
+	float speed = mSpeedConstant * deltatime;
 
 	if (key_events_buffer[GLFW_KEY_W])
 	{
@@ -256,7 +259,6 @@ void Camera::UpdateProcess(double deltatime)
 	{
 		MoveUpward(-speed);
 	}
-
 	if (mouse_position_buffer[2] == 1) {
 		Rotate(mouse_position_buffer[1], mouse_position_buffer[0]);
 		mouse_position_buffer[2] = 0;

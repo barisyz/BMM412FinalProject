@@ -38,8 +38,10 @@ void Animation::BoneTransform(float time, std::vector<aiMatrix4x4> &Transforms)
 	float TicksPerSecond = mScene->mAnimations[0]->mTicksPerSecond != 0 ?
 		mScene->mAnimations[0]->mTicksPerSecond : 25.0f;
 	float TimeInTicks = time * TicksPerSecond;
-	float animationTime = fmod(TimeInTicks, mScene->mAnimations[0]->mDuration);
+//	float animationTime = fmod(TimeInTicks, mScene->mAnimations[0]->mDuration);
+	float animationTime = fmod(TimeInTicks, mDuration);
 
+	//mScene->mRootNode->  pNodeAnim->mPositionKeys[i + 1].mTime
 	ReadNodeHeirarchy(animationTime, mScene->mRootNode, identityMatrix);
 
 	Transforms.resize(mNumBones);
@@ -94,14 +96,16 @@ void Animation::SetupBonesLocation(GLuint shader)
 void Animation::ReadNodeHeirarchy(float time, const aiNode* pNode, const aiMatrix4x4& ParentTransform)
 {
 	std::string NodeName(pNode->mName.data);
-
+	
 	const aiAnimation* pAnimation = mScene->mAnimations[0];
 
+	//unsigned int StartIndex = FindPosition()
 	aiMatrix4x4 NodeTransformation(pNode->mTransformation);
 
 	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
-	if (pNodeAnim) {
+	if (pNodeAnim) 
+	{
 		// Interpolate scaling and generate scaling transformation matrix
 		aiVector3D Scaling;
 		CalcInterpolatedScaling(Scaling, time, pNodeAnim);
@@ -214,8 +218,8 @@ const aiNodeAnim* Animation::FindNodeAnim(const aiAnimation* pAnimation, const s
 
 unsigned int Animation::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
 {
-	for (unsigned int i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
+	for (unsigned int i = mStartKey; i < mEndKey; i++) {
+		if (AnimationTime <= (float)pNodeAnim->mPositionKeys[i+1].mTime) {
 			return i;
 		}
 	}
@@ -228,8 +232,8 @@ unsigned int Animation::FindRotation(float AnimationTime, const aiNodeAnim* pNod
 {
 	assert(pNodeAnim->mNumRotationKeys > 0);
 
-	for (unsigned int i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
+	for (unsigned int i = mStartKey; i < mEndKey; i++) {
+		if (AnimationTime <= (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
 			return i;
 		}
 	}
@@ -242,11 +246,60 @@ unsigned int Animation::FindScaling(float AnimationTime, const aiNodeAnim* pNode
 {
 	assert(pNodeAnim->mNumScalingKeys > 0);
 
-	for (unsigned int i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
+	for (unsigned int i = mStartKey; i < mEndKey; i++) {
 		if (AnimationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
 			return i;
 		}
 	}
 
 	return 0;
+}
+
+void Animation::AddAnimationInfo(std::string name, unsigned int startKey, unsigned int endKey, float duration)
+{
+	AnimationInfo animationInfo;
+
+	animationInfo.duration = duration;
+	animationInfo.startKey = startKey;
+	animationInfo.endKey = endKey;
+	
+	if (mAnimationInfo.find(name) == mAnimationInfo.end())
+	{
+		mAnimationLocation.push_back(animationInfo);
+		mAnimationInfo.insert(std::pair<std::string, unsigned int>(name, mAnimationLocation.size() - 1));
+
+		if (mAnimationLocation.size() == 1)
+			SetAnimation(name);
+	}
+}
+
+bool Animation::IsAnimatedInThisFrame()
+{
+	return mIsAnimatedInThisFrame;
+}
+
+void Animation::SetAnimation(std::string animationName)
+{
+	auto index = mAnimationInfo.find(animationName);
+
+	AnimationInfo anim = mAnimationLocation[index->second];
+
+	mStartKey = anim.startKey;
+	mEndKey = anim.endKey;
+	mDuration = anim.duration;
+}
+
+void Animation::StartAnimation()
+{
+	mIsAnimatedInThisFrame = true;
+}
+
+void Animation::StopAnimation()
+{
+	mIsAnimatedInThisFrame = false;
+}
+
+float Animation::GetAnimationDuration()
+{
+	return mDuration;
 }
