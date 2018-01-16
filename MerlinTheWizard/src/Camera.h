@@ -17,7 +17,7 @@ public:
 	glm::vec3 c_direction;
 	glm::vec3 c_rightVector;
 	glm::vec3 c_upVector;
-	glm::vec3 c_offset = glm::vec3(0.01, -0.15, -0.07);
+	glm::vec3 c_offset = glm::vec3(0.0, -0.27, 0.06);
 	float sensitivity = 0.0010f;
 
 	glm::vec3 GetPosition();

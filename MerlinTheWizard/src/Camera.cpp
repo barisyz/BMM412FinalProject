@@ -133,19 +133,15 @@ void Camera::Rotate(float ypos, float xpos) {
 	glm::vec3 upVector = glm::cross(c_rightVector, c_direction);
 
 	if (!mFreeMode) {
-		if ((direction.y <= 1.0))
-		{
-			c_direction = direction;
-			c_rightVector = rightVector;
-			c_upVector = upVector;
-			//std::cout << "c_direction: " << c_direction.x << " " << c_direction.y << " " << c_direction.z << " " << "\n";
-			//std::cout << "c_rightVector: " << c_rightVector.x << " " << c_rightVector.y << " " << c_rightVector.z << " " << "\n";
-			//std::cout << "c_upVector: " << c_upVector.x << " " << c_upVector.y << " " << c_upVector.z << " " << "\n";
+		c_direction.z = 0;
+		c_direction = direction;
+		c_rightVector = rightVector;
+		c_upVector = glm::cross(c_rightVector, c_direction);
 
-			glm::vec3 rotation = glm::vec3(0, c_viewMatrix[1][1], 0);
-			
-			mPlayer->Rotate(rotation, horizontalAngle);
-		}
+		glm::vec3 rotation = glm::vec3(0, c_viewMatrix[1][1], 0);
+		//c_offset.z = c_offset.z * cos(horizontalAngle - 3.14f / 2.0f);
+
+		mPlayer->Rotate(rotation, horizontalAngle);
 	}
 	else
 	{

@@ -72,19 +72,16 @@ private:
 
 		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 			setRight(1); setLeft(0);
-			cam->GetPlayer()->CastSkill();
-
-
+			cam->GetPlayer()->GetModelPointer()->GetAnimationPointer()->SetAnimation("idle");
 		}
 		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+			cam->GetPlayer()->CastSkill();
 
 			if (InputManager::full == 1) {
-				Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
 				cam->SetVelocitySpell();
 			}
 
 			setRight(0); setLeft(1);
-			cam->GetPlayer()->GetModelPointer()->GetAnimationPointer()->SetAnimation("skillCast");
 		}
 
 	}

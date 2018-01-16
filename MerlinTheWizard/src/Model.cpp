@@ -16,6 +16,7 @@ Model::Model(const char * modelPath)
 	if (!mScene)
 	{
 		fprintf(stderr, "Error: %s\n", importer.GetErrorString());
+		assert(importer.GetErrorString());
 	}
 
 	LoadModel(mScene);

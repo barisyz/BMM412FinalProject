@@ -140,9 +140,11 @@ void SceneManager::CreateModels()
 	//wizard.Rotate(glm::vec3(5.0, 4.0, 5.0), -90.0f);
 	mPlayer.Scale(glm::vec3(0.03f, 0.03f, 0.03f));
 	mPlayer.Translate(glm::vec3(0.0f, 0.15f, 2.3f));
+	mPlayer.GetModelPointer()->AddAnimationInfo("walk", 0, 3, 0.80f);
+	mPlayer.GetModelPointer()->AddAnimationInfo("idle", 0, 1, 0.50f);
+	mPlayer.GetModelPointer()->AddAnimationInfo("skillCast", 3, 5, 0.80f);
 	//mPlayer.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
-	mEntityList.push_back(mPlayer);
-
+	//mEntityList.push_back(mPlayer);
 
 	Entity target = Entity(targetStr.c_str(), mShader);
 	target.Scale(glm::vec3(0.1f, 0.1f, 0.1f));
