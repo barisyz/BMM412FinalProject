@@ -18,6 +18,13 @@ Camera::Camera(int width, int height)
 
 	verticalAngle = 0;
 	horizontalAngle = 0;
+
+	pointCollider.initialized = true;
+	pointCollider.position = ((c_position + c_direction) + c_position) / 2;
+
+	pointCollider.size.x = abs(c_direction.x) * sqrtf((pointCollider.position.x - c_position.x) * (pointCollider.position.x - c_position.x));
+	pointCollider.size.y = abs(c_direction.y) * sqrtf((pointCollider.position.y - c_position.y) * (pointCollider.position.y - c_position.y));
+	pointCollider.size.z = abs(c_direction.z) * sqrtf((pointCollider.position.z - c_position.z) * (pointCollider.position.z - c_position.z));
 }
 
 void Camera::AttachPlayer(Player* player)
@@ -28,7 +35,7 @@ void Camera::AttachPlayer(Player* player)
 void Camera::FollowPlayer()
 {
 	c_position = mPlayer->GetPosition() - c_offset;
-	
+
 	c_direction = { 0, 0, 1 };
 	c_upVector = { 0, 1, 0 };
 	c_rightVector = { -1, 0, 0 };
@@ -92,7 +99,7 @@ void Camera::Movement(glm::vec3 temp) {
 	{
 		if (!mPlayer->IsPlayerCastingSkill())
 		{
-			if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5) {
+			if (temp2.y < 5 && temp2.y > 0 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 3.75) {
 				temp.y = 0.0;
 				c_position += temp;
 			}
@@ -102,15 +109,15 @@ void Camera::Movement(glm::vec3 temp) {
 	}
 	else
 	{
-		if (temp2.y < 5 && temp2.y > -5 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 5)
-			c_position += temp;
+		//if (temp2.y < 5 && temp2.y > 0 && sqrt(temp2.x * temp2.x + temp2.z * temp2.z) < 3.75)
+		c_position += temp;
 	}
-		
+
 }
 void Camera::Rotate(float ypos, float xpos) {
 	horizontalAngle += sensitivity * xpos;
 	verticalAngle += sensitivity * ypos;
-	
+
 	glm::vec3 direction = glm::vec3(
 		cos(verticalAngle) * sin(horizontalAngle),
 		sin(verticalAngle),
@@ -263,13 +270,17 @@ void Camera::UpdateProcess(double deltatime)
 		Rotate(mouse_position_buffer[1], mouse_position_buffer[0]);
 		mouse_position_buffer[2] = 0;
 	}
+	pointCollider.position = ((c_position + c_direction) + c_position) / 2;
+
+	pointCollider.size.x = abs(c_direction.x) * sqrtf((pointCollider.position.x - c_position.x) * (pointCollider.position.x - c_position.x));
+	pointCollider.size.y = abs(c_direction.y) * sqrtf((pointCollider.position.y - c_position.y) * (pointCollider.position.y - c_position.y));
+	pointCollider.size.z = abs(c_direction.z) * sqrtf((pointCollider.position.z - c_position.z) * (pointCollider.position.z - c_position.z));
+
 
 }
 
-bool Camera::Condition() {
+void Camera::SetVelocitySpell() {
 
-	if (c_position.y > -2 && c_position.y < 2)
-		return true;
+	this->spell->SetVelocity(normalize(c_direction) * 2);
 
-	return false;
 }

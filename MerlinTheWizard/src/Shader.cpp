@@ -20,7 +20,7 @@ void Shader::LoadShader(const char* vertexPath, const char* fragmentPath)
 
 	GLuint program = glCreateProgram();
 
-	if (vertexFile != NULL && fragmentFile !=NULL) 
+	if (vertexFile != NULL && fragmentFile != NULL)
 	{
 		GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 		GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -32,8 +32,8 @@ void Shader::LoadShader(const char* vertexPath, const char* fragmentPath)
 		glShaderSource(fragmentShaderID, 1, &fragmentFile, NULL);
 		glCompileShader(fragmentShaderID);
 		glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &fragCompileStatus);
-		
-		if (!vertCompileStatus) 
+
+		if (!vertCompileStatus)
 		{
 			std::cerr << vertexFile << " failed to compile:" << std::endl;
 			GLint  logSize;
@@ -53,7 +53,7 @@ void Shader::LoadShader(const char* vertexPath, const char* fragmentPath)
 			std::cerr << logMsg << std::endl;
 			throw std::runtime_error("Shader file cannot be loaded!");
 		}
-		else 
+		else
 		{
 			glAttachShader(program, vertexShaderID);
 			glAttachShader(program, fragmentShaderID);

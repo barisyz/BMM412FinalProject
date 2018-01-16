@@ -10,6 +10,8 @@ Entity::Entity()
 	mModel = Model();
 	mTranformation = { glm::mat4(), glm::mat4(), glm::mat4() };
 	mModelMatrix = glm::mat4();
+
+	theta = 0.0f;
 }
 
 Entity::Entity(const char * modelPath, Shader shader)
@@ -21,6 +23,7 @@ Entity::Entity(const char * modelPath, Shader shader)
 	mTranformation = { glm::mat4(), glm::mat4(), glm::mat4() };
 	mModelMatrix = glm::mat4();
 	mModel = Model(modelPath);
+	theta = 0.0f;
 }
 
 //Entity::~Entity()
@@ -152,4 +155,8 @@ void Entity::InitiaizeCollider(glm::vec3 scale, bool initialized) {
 	this->collider.size = scale;
 	this->collider.position = GetPosition();
 	this->collider.initialized = initialized;
+}
+void Entity::SetVelocity(glm::vec3 velocity) {
+
+	//do not use with enities. Use with spells only.
 }

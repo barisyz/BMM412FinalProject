@@ -25,7 +25,7 @@ private:
 	float sizeMultiplier;
 	float spread; //how spread are the particles
 
-	//start variables
+				  //start variables
 	float sphericalRadius;
 	float life;
 	glm::vec3 startPosition;
@@ -61,7 +61,7 @@ public:
 
 	//some variables
 	float deltaTime;
-	bool loop; 
+	bool loop;
 	int loopdisabler;
 	bool playable;
 	bool randomdir;

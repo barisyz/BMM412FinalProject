@@ -19,8 +19,13 @@ public:
 	glm::vec3 c_upVector;
 	glm::vec3 c_offset = glm::vec3(0.01, -0.15, -0.07);
 	float sensitivity = 0.0010f;
+
 	glm::vec3 GetPosition();
 	void SetPosition(glm::vec3 position);
+
+	Entity *spell;
+	CubeCollider pointCollider;
+
 	//Move commands
 	void MoveTo(glm::vec3 location);
 	void MoveForward(float direction);
@@ -38,6 +43,7 @@ public:
 	void mouse_event(double xpos, double ypos);
 
 	void UpdateProcess(double deltatime);
+	void SetVelocitySpell();
 
 	const glm::mat4& getViewMatrix()           const noexcept;
 	const glm::mat4& getProjMatrix()           const noexcept;
@@ -56,7 +62,7 @@ private:
 	double mouse_position_buffer[3];
 	float mSpeedConstant = 10;
 	float horizontalAngle, verticalAngle;
-	
+
 	bool Condition();
 	void Movement(glm::vec3 temp);
 };

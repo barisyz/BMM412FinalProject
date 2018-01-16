@@ -42,7 +42,7 @@ private:
 	vector<VertexBoneData> mBones;
 	unsigned int mMaterialIndex;
 	GLuint mVAO, mVBO, mEBO;
-	
+
 	void SetupMesh();
 };
 

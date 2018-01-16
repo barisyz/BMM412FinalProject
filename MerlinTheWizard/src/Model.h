@@ -25,7 +25,7 @@ public:
 	Model();
 	Model(const char * modelPath);
 	bool LoadModel(const aiScene* scene);
-	//~Model();
+	~Model();
 	void ApplyMaterial(unsigned int materialIndex, Shader shader);
 	void Draw(Shader shader, float time);
 	Animation* GetAnimationPointer();
@@ -40,5 +40,5 @@ private:
 	vector<sMaterial> mMaterials;
 
 	const aiScene* mScene;
-	
+
 };

@@ -4,10 +4,11 @@
 #include "GL/glew.h"
 #include "Shader.h"
 #include "InputManager.h"
-#include "Entity.h"
 #include "Spell.h"
 #include "GLFW/glfw3.h"
-#include <string.h>
+#include <fstream>
+#include <string>
+#include "Light.h"
 
 class SceneManager
 {
@@ -25,6 +26,7 @@ private:
 	Shader mShader;
 	Shader particleShader;
 	Shader mSkinningShader;
+	Light light;
 	std::vector<Entity> mEntityList;
 	std::vector<Spell> mSpellList;
 	InputManager mInputManager;

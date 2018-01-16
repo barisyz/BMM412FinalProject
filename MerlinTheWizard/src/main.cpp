@@ -28,7 +28,9 @@ int main(void)
 	Renderer renderer = Renderer(win);
 
 	// Hide the mouse and enable unlimited movement
-	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
+	glfwSetCursor(win, cursor);
+	//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CROSSHAIR_CURSOR);
 
 	int width, height;
 	double startTime = glfwGetTime();
