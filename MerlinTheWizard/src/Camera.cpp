@@ -290,6 +290,6 @@ void Camera::SetVelocitySpell() {
 }
 void Camera::Reshape(float w, float h) {
 
-	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)w / (float)h, 0.025f, 2000.0f);
+	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)w / (float)h, 0.13f, 2000.0f);
 
 }

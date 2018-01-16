@@ -47,7 +47,7 @@ void SceneManager::CreateScene()
 
 void SceneManager::drawAll(double deltaTime)
 {
-	light.Render(mShader);
+	light.Render(mShader, mSkinningShader);
 
 	GLuint currentShader = -1;
 	//Models
@@ -57,6 +57,7 @@ void SceneManager::drawAll(double deltaTime)
 			currentShader = mEntityList[i].GetShader();
 			glUseProgram(currentShader);
 		}
+
 		mCamera.Render(currentShader, deltaTime);
 		mEntityList[i].Render(deltaTime);
 		mEntityList[i].RenderParticles(deltaTime, mCamera.c_position, mCamera.c_upVector, mCamera.c_rightVector);
@@ -161,16 +162,16 @@ void SceneManager::CreateModels()
 	spider.Translate(glm::vec3(4.73, 0.0f, 0.1f));
 	mEntityList.push_back(spider);
 
-/*	Entity wolf = Entity(wolfStr.c_str(), mSkinningShader);
+	Entity wolf = Entity(wolfStr.c_str(), mSkinningShader);
 	wolf.Scale(glm::vec3(0.45f, 0.45f, 0.35f));
 	wolf.Translate(glm::vec3(-4.4, 0.0f, 1.1f));
-	wolf.Rotate(glm::vec3(1.0, 0.0f, 0.0f), 90);
-	mEntityList.push_back(wolf);*/
+	wolf.Rotate(glm::vec3(0.0, 1.0f, 0.0f), 90);
+	mEntityList.push_back(wolf);
 
 	Entity target = Entity(targetStr.c_str(), mShader);
 	target.Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 	target.Translate(glm::vec3(-0.33, 0.7f, 2.78f));
-	target.InitiaizeCollider(glm::vec3(0.5, 0.3, 0.5));
+	target.InitiaizeCollider(glm::vec3(0.6, 0.3, 0));
 	//target.Rotate(glm::vec3(0, 1, 0), 90);
 	mEntityList.push_back(target);
 
@@ -297,7 +298,7 @@ void SceneManager::ChangeShaders() {
 	else
 		mShader = fragShader;
 
-	for (unsigned i = 1; i < mEntityList.size(); i++)
+	for (unsigned i = 2; i < mEntityList.size(); i++)
 	{
 		mEntityList[i].SetShader(mShader);
 	}

@@ -14,7 +14,7 @@ public:
 
 	void ChangeColour(glm::vec4 colour);
 	void Translate(glm::vec4 position);
-	void Render(Shader shader);
+	void Render(Shader shader, Shader skinShader);
 
 	void Input(int key);
 };

@@ -5,12 +5,16 @@ Light::Light() {
 	this->position = glm::vec4(0, 15, -10, 1);
 	this->colour = glm::vec4(1, 1, 1, 1);
 }
-void Light::Render(Shader shader) {
+void Light::Render(Shader shader, Shader skinShader) {
 
 
 	shader.Use();
 	glUniform4fv(glGetUniformLocation(shader.GetID(), "LightPosition"), 1, &position[0]);
 	glUniform4fv(glGetUniformLocation(shader.GetID(), "LightColor"), 1, &colour[0]);
+
+	skinShader.Use();
+	glUniform4fv(glGetUniformLocation(skinShader.GetID(), "LightPosition"), 1, &position[0]);
+	glUniform4fv(glGetUniformLocation(skinShader.GetID(), "LightColor"), 1, &colour[0]);
 }
 
 void Light::Translate(glm::vec4 position){
