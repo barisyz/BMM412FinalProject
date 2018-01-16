@@ -57,6 +57,9 @@
     <ClCompile Include="src\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -104,6 +107,9 @@
     <ClInclude Include="src\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\BasicVertex.glsl">
@@ -118,7 +124,17 @@
     <None Include="res\shaders\particle.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\shaders\SkinningVertex.glsl" />
-    <None Include="res\shaders\SkinningFrag.glsl" />
+    <None Include="res\shaders\SkinningFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shaders\SkinningVertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="perVertex.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="perVertex.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

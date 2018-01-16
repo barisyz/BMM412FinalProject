@@ -8,7 +8,7 @@ SceneManager::SceneManager(GLFWwindow* window)
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 	mCamera = Camera(width, height);
-
+	light = Light();
 
 }
 
@@ -32,7 +32,7 @@ void SceneManager::CreateScene()
 	mSkinningShader.LoadShader(skinnigVertexShaderPath.c_str(), skinningFragmentShaderPath.c_str());
 	particleShader.LoadShader(particleVertexShaderPath.c_str(), particleFragmentShaderPath.c_str());
 
-	mInputManager = InputManager(mWindow, &mCamera);
+	mInputManager = InputManager(mWindow, &mCamera, &light);
 
 	CreateModels();
 
@@ -41,8 +41,7 @@ void SceneManager::CreateScene()
 
 void SceneManager::drawAll(double deltaTime)
 {
-	particleShader.Use();
-	mCamera.Render(particleShader.GetID(), deltaTime);
+	light.Render(mShader);
 
 	GLuint currentShader = -1;
 
@@ -74,6 +73,11 @@ void SceneManager::drawAll(double deltaTime)
 		}
 
 	}
+
+	particleShader.Use();
+	mCamera.Render(particleShader.GetID(), deltaTime);
+
+
 	for (unsigned int i = 0; i < mSpellList.size(); i++) {
 
 		mSpellList[i].RenderParticles(deltaTime, mCamera.c_position, mCamera.c_upVector, mCamera.c_rightVector);
@@ -84,6 +88,8 @@ void SceneManager::drawAll(double deltaTime)
 }
 
 void SceneManager::UpdateScene() {
+
+	light.Input(InputManager::mkey);
 
 	for (unsigned int i = 0; i < mSpellList.size(); i++) {
 
@@ -119,6 +125,7 @@ void SceneManager::CreateModels()
 	std::string cloudStr = ModelBase + "cloud.obj";
 	std::string rockStr = ModelBase + "rock.obj";
 	std::string sceneStr = ModelBase + "completeScene.obj";
+	std::string targetStr = ModelBase + "untitled.obj";
 	/*std::string wolfStr = ModelBase + "wolf1.dae";
 	std::string spiderStr = ModelBase + "spider.dae";*/
 
@@ -130,16 +137,13 @@ void SceneManager::CreateModels()
 	mEntityList.push_back(mPlayer);
 
 
-	/*Entity cloud = Entity(cloudStr.c_str(), mShader);
-	cloud.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-	cloud.Translate(glm::vec3(-0.6, 3.0f, 0.0f));
-	mEntityList.push_back(cloud);
+	Entity target = Entity(targetStr.c_str(), mShader);
+	target.Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+	target.Translate(glm::vec3(-0.33, 0.7f, 2.78f));
+	target.InitiaizeCollider(glm::vec3(0.5, 0.5, 0.1));
+	//target.Rotate(glm::vec3(0, 1, 0), 90);
+	mEntityList.push_back(target);
 
-	Entity cloud1 = Entity(cloudStr.c_str(), mShader);
-	cloud1.Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-	cloud1.Translate(glm::vec3(0.0, 3.0f, 0.0f));
-	mEntityList.push_back(cloud1);
-	*/
 	Entity rock = Entity(rockStr.c_str(), mShader);
 	rock.Scale(glm::vec3(1, 1, 1));
 	rock.Translate(glm::vec3(-3.86f, 0, -0.6f));
@@ -156,7 +160,7 @@ void SceneManager::CreateModels()
 	scene.Scale(glm::vec3(1.0, 1, 1.0));
 	scene.Translate(glm::vec3(1.0, -0.2, 0));
 
-	ParticleSystem volcano = ParticleSystem(1000);
+	ParticleSystem volcano = ParticleSystem(500);
 	volcano.SetBuffers(particleShader);
 	volcano.maindirType = 0;
 	volcano.SetStartVariables(3.0f, 10, 0.2f, glm::vec4(1, 0, 0, 1));

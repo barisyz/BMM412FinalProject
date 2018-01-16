@@ -6,6 +6,7 @@
 #include "GLFW/glfw3.h"
 #include <fstream>
 #include <string>
+#include "Light.h"
 
 class SceneManager
 {
@@ -23,6 +24,7 @@ private:
 	Shader mShader;
 	Shader particleShader;
 	Shader mSkinningShader;
+	Light light;
 	std::vector<Entity> mEntityList;
 	std::vector<Spell> mSpellList;
 	InputManager mInputManager;

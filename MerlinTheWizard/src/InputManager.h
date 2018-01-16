@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+#include "Light.h"
 #include "GLFW\glfw3.h"
 #include <iostream>
 
@@ -7,17 +8,18 @@ class InputManager
 {
 public:
 	InputManager();
-	InputManager(GLFWwindow* window, Camera* camera);
+	InputManager(GLFWwindow* window, Camera* camera, Light* light);
 	~InputManager();
 
 	static int rightFlag;
 	static int leftFlag;
 	static int full;
+	static int mkey;
 
 private:
 	GLFWwindow* mWindow;
 	Camera* mCamera;
-
+	Light *mLight;
 
 	static void setRight(int number) {
 		rightFlag = number;
@@ -29,6 +31,9 @@ private:
 
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
+
+		mkey = key;
+
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
 		}
@@ -46,6 +51,8 @@ private:
 		}
 
 		cam->keyboard_event(key, scancode, action, mods);
+		
+
 
 	}
 
