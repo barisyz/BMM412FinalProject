@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SCENE_MANAGER_H
+#define SCENE_MANAGER_H
+
 #include "GL/glew.h"
 #include "Shader.h"
 #include "InputManager.h"
@@ -36,4 +38,5 @@ private:
 	Player mPlayer;
 	GLFWwindow* mWindow;
 };
+#endif // !SCENE_MANAGER_H
 

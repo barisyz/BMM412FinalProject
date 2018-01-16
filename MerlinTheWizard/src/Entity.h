@@ -39,6 +39,8 @@ public:
 
 	void InitiaizeCollider(glm::vec3 scale, bool initialized = true);
 
+	void TranslateWithAnimation(glm::vec3 translateVector);
+
 	void AddParticleSystem(ParticleSystem sys);
 	std::vector<ParticleSystem> GetParticleSystemList();
 	GLuint GetShader();
@@ -51,8 +53,7 @@ public:
 	glm::vec3 GetRotation();
 	void SetRotation(glm::vec3 rotation);
 	Model GetModel();
-
-
+	Model *GetModelPointer();
 private:
 	glm::vec3 mPosition;
 	glm::vec3 mScale;

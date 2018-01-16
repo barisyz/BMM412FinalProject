@@ -109,6 +109,11 @@ Model Entity::GetModel()
 	return mModel;
 }
 
+Model * Entity::GetModelPointer()
+{
+	return &mModel;
+}
+
 void Entity::Translate(glm::vec3 translateVec)
 {
 	mTranformation.TranslationMatrix = glm::translate(glm::mat4(), translateVec);

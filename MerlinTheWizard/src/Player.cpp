@@ -27,11 +27,40 @@ void Player::keyboard_event(int key, int scancode, int action, int mode)
 void Player::Move(glm::vec3 pos)
 {
 	Translate(pos);
-	SetPosition(pos);
+	GetModelPointer()->GetAnimationPointer()->SetAnimation("walk");
+	GetModelPointer()->GetAnimationPointer()->StartAnimation();
 }
 
-void Player::Update()
+bool Player::IsPlayerCastingSkill()
 {
+	return mIsPlayerCastingSkill;
+}
+
+void Player::CastSkill()
+{
+	if (!mIsPlayerCastingSkill)
+	{
+		Animation *anim = GetModelPointer()->GetAnimationPointer();
+		mIsPlayerCastingSkill = true;
+		anim->SetAnimation("skillCast");
+		mAnimDuration = anim->GetAnimationDuration();
+		GetModelPointer()->GetAnimationPointer()->StartAnimation();
+	}
+	
+}
+
+void Player::Update(float deltaTime)
+{
+	if (mAnimDuration > 0)
+	{
+		mAnimDuration -= deltaTime;
+		if (mAnimDuration <= 0)
+		{
+			mIsPlayerCastingSkill = false;
+			GetModelPointer()->GetAnimationPointer()->StopAnimation();
+			mAnimDuration = 0.0f;
+		}
+	}
 }
 
 

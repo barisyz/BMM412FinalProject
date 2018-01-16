@@ -28,6 +28,8 @@ public:
 	~Model();
 	void ApplyMaterial(unsigned int materialIndex, Shader shader);
 	void Draw(Shader shader, float time);
+	Animation* GetAnimationPointer();
+	void AddAnimationInfo(std::string name, unsigned int startKey, unsigned int endKey, float duration);
 	bool IsAnimated();
 private:
 	void ProcessNode(aiNode* node, const aiScene* scene);

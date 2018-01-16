@@ -50,7 +50,7 @@ void SceneManager::drawAll(double deltaTime)
 	light.Render(mShader);
 
 	GLuint currentShader = -1;
-
+	//Models
 	for (unsigned int i = 0; i < mEntityList.size(); i++) {
 		if (currentShader != mEntityList[i].GetShader())
 		{
@@ -61,7 +61,14 @@ void SceneManager::drawAll(double deltaTime)
 		mEntityList[i].Render(deltaTime);
 		mEntityList[i].RenderParticles(deltaTime, mCamera.c_position, mCamera.c_upVector, mCamera.c_rightVector);
 	}
+	
+	//Player
+	mCamera.Render(mPlayer.GetShader(), deltaTime);
+	glUseProgram(mPlayer.GetShader());
+	mPlayer.Render(deltaTime);
+	mPlayer.Update(deltaTime);
 
+	//Spells
 	bool temp = false;
 	for (unsigned int i = 0; i < mSpellList.size(); i++) {
 		temp = false;
@@ -106,6 +113,7 @@ void SceneManager::UpdateScene(float deltaTime) {
 
 		if (InputManager::rightFlag == 1) {
 			if (InputManager::full == 0) {
+				mPlayer.skillHold = true;
 				if (mSpellList[i].CheckCollusion(mCamera.pointCollider)) {
 					mCamera.spell = &mSpellList[i];
 					InputManager::full = 1;
@@ -133,22 +141,37 @@ void SceneManager::UpdateScene(float deltaTime) {
 void SceneManager::CreateModels()
 {
 	//model string
-	std::string wizardStr = ModelBase + "wizard.dae";
+	std::string wizardStr = ModelBase + "wizard1.dae";
 	std::string cloudStr = ModelBase + "cloud.obj";
 	std::string rockStr = ModelBase + "rock.obj";
 	std::string stoneStr = ModelBase + "stone.obj";
 	std::string sceneStr = ModelBase + "completeScene.obj";
 	std::string targetStr = ModelBase + "untitled.obj";
-	/*std::string wolfStr = ModelBase + "wolf1.dae";
-	std::string spiderStr = ModelBase + "spider.dae";*/
+	std::string spiderStr = ModelBase + "spider.dae";
+	std::string wolfStr = ModelBase + "wolf.dae";
 
 	mPlayer = Player(wizardStr.c_str(), mSkinningShader);
 	//wizard.Rotate(glm::vec3(5.0, 4.0, 5.0), -90.0f);
 	mPlayer.Scale(glm::vec3(0.03f, 0.03f, 0.03f));
 	mPlayer.Translate(glm::vec3(0.0f, 0.15f, 2.3f));
-	//mPlayer.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
-	mEntityList.push_back(mPlayer);
 
+	mPlayer.GetModelPointer()->AddAnimationInfo("walk", 0, 3, 0.80f);
+	mPlayer.GetModelPointer()->AddAnimationInfo("idle", 0, 1, 0.50f);
+	mPlayer.GetModelPointer()->AddAnimationInfo("skillCast", 3, 5, 0.65f);
+
+	//mPlayer.InitiaizeCollider(glm::vec3(0.15, 2.0, 0.3));
+	//mEntityList.push_back(mPlayer);
+
+	Entity spider = Entity(spiderStr.c_str(), mSkinningShader);
+	spider.Scale(glm::vec3(0.4f, 0.4f, 0.4f));
+	spider.Translate(glm::vec3(4.73, 0.0f, 0.1f));
+	mEntityList.push_back(spider);
+
+	Entity wolf = Entity(wolfStr.c_str(), mSkinningShader);
+	wolf.Scale(glm::vec3(0.45f, 0.45f, 0.35f));
+	wolf.Translate(glm::vec3(-4.4, 0.0f, 1.1f));
+	wolf.Rotate(glm::vec3(0.0, 1.0f, 0.0f), 90);
+	mEntityList.push_back(wolf);
 
 	Entity target = Entity(targetStr.c_str(), mShader);
 	target.Scale(glm::vec3(0.1f, 0.1f, 0.1f));
@@ -269,7 +292,7 @@ void SceneManager::CreateModels()
 		mSpellList.push_back(*fire1);
 	}
 
-	mCamera.AttachPlayer(&mEntityList[0]);
+	mCamera.AttachPlayer(&mPlayer);
 
 	glEnable(GL_DEPTH_TEST);
 }

@@ -58,9 +58,6 @@ private:
 		}
 
 		cam->keyboard_event(key, scancode, action, mods);
-		
-
-
 	}
 
 	static void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
@@ -78,18 +75,18 @@ private:
 	}
 
 	static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+		Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
 
 		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 			setRight(1); setLeft(0);
-
-
-
+			//cam->GetPlayer()->GetModelPointer()->GetAnimationPointer()->SetAnimation("idle");
 		}
 		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+			//cam->GetPlayer()->CastSkill();S
 
 			if (InputManager::full == 1) {
-				Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
 				cam->SetVelocitySpell();
+				cam->GetPlayer()->CastSkill();
 			}
 
 			setRight(0); setLeft(1);

@@ -16,6 +16,7 @@ Model::Model(const char * modelPath)
 	if (!mScene)
 	{
 		fprintf(stderr, "Error: %s\n", importer.GetErrorString());
+		assert(importer.GetErrorString());
 	}
 
 	LoadModel(mScene);
@@ -86,13 +87,31 @@ void Model::Draw(Shader shader, float time)
 {
 	if (mAnimation.IsAnimated())
 	{
-		if (!mAnimation.IsLocationSetted())
+		if (!mAnimation.IsLocationSetted()) 
 		{
 			mAnimation.SetupBonesLocation(shader.GetID());
+			mAnimation.MakeBoneTransform(0);
 		}
-
+			
 		float RunningTime = (float)((double)glfwGetTime() - (double)time);
-		mAnimation.MakeBoneTransform(RunningTime);
+
+		if (mAnimation.IsSplitAnimation())
+		{
+			if (mAnimation.IsAnimatedInThisFrame())
+			{
+				mAnimation.MakeBoneTransform(RunningTime);
+				mAnimation.StopAnimation();
+			}
+			else
+			{
+				mAnimation.MakeBoneTransform(0);
+			}
+		}
+		else 
+		{
+			mAnimation.MakeBoneTransform(RunningTime);
+		}
+		
 	}
 
 	for (unsigned int i = 0; i < mMeshes.size(); i++)
@@ -197,3 +216,12 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	return Mesh(vertices, indices, bones);
 }
 
+Animation* Model::GetAnimationPointer()
+{
+	return &mAnimation;
+}
+
+void Model::AddAnimationInfo(std::string name, unsigned int startKey, unsigned int endKey, float duration)
+{
+	mAnimation.AddAnimationInfo(name, startKey, endKey, duration);
+}
