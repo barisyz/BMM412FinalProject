@@ -17,7 +17,7 @@ public:
 	glm::vec3 c_direction;
 	glm::vec3 c_rightVector;
 	glm::vec3 c_upVector;
-	glm::vec3 c_offset = glm::vec3(0.0, -0.27, 0.06);
+	glm::vec3 c_offset = glm::vec3(0.0, -0.27, -0.06);
 	float sensitivity = 0.0010f;
 
 	glm::vec3 GetPosition();
@@ -62,7 +62,6 @@ private:
 	double mouse_position_buffer[3];
 	float mSpeedConstant = 10;
 	float horizontalAngle, verticalAngle;
-
-	bool Condition();
+	
 	void Movement(glm::vec3 temp);
 };

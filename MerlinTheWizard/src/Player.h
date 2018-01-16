@@ -15,6 +15,7 @@ public:
 	bool IsPlayerCastingSkill();
 	void Update(float deltaTime);
 	void CastSkill();
+	bool skillHold = false;
 private:
 	bool mIsPlayerCastingSkill = false;
 	float mAnimDuration = 0.0f;

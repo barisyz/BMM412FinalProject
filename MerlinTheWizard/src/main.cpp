@@ -22,7 +22,7 @@ int main(void)
 	Window window = Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE);
 
 	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS);
+	//glDepthFunc(GL_LESS);
 
 	GLFWwindow *win = window.getWindow();
 	Renderer renderer = Renderer(win);

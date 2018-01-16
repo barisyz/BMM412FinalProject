@@ -37,19 +37,28 @@ void Animation::BoneTransform(float time, std::vector<aiMatrix4x4> &Transforms)
 
 	float TicksPerSecond = mScene->mAnimations[0]->mTicksPerSecond != 0 ?
 		mScene->mAnimations[0]->mTicksPerSecond : 25.0f;
+
 	float TimeInTicks = time * TicksPerSecond;
-//	float animationTime = fmod(TimeInTicks, mScene->mAnimations[0]->mDuration);
-	float animationTime = fmod(TimeInTicks, mDuration);
+	float animationTime = fmod(TimeInTicks, mScene->mAnimations[0]->mDuration);
 
-	//mScene->mRootNode->  pNodeAnim->mPositionKeys[i + 1].mTime
-	ReadNodeHeirarchy(animationTime, mScene->mRootNode, identityMatrix);
+	if (mHasSplitAnimation)
+	{
+		animationTime = fmod(TimeInTicks, mDuration);
 
-	Transforms.resize(mNumBones);
-
-	for (unsigned int i = 0; i < mNumBones; i++) {
-		Transforms[i] = mBoneInfo[i].FinalTransformation;
 	}
+
+
+		ReadNodeHeirarchy(animationTime, mScene->mRootNode, identityMatrix);
+
+		Transforms.resize(mNumBones);
+
+		for (unsigned int i = 0; i < mNumBones; i++) {
+			Transforms[i] = mBoneInfo[i].FinalTransformation;
+		}
+	
 }
+	//mScene->mRootNode->  pNodeAnim->mPositionKeys[i + 1].mTime
+
 
 void Animation::MakeBoneTransform(float time)
 {
@@ -218,7 +227,10 @@ const aiNodeAnim* Animation::FindNodeAnim(const aiAnimation* pAnimation, const s
 
 unsigned int Animation::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
 {
-	for (unsigned int i = mStartKey; i < mEndKey; i++) {
+	unsigned int min = mHasSplitAnimation ? mStartKey : 0;
+	unsigned int max = mHasSplitAnimation ? mEndKey : pNodeAnim->mNumPositionKeys - 1;
+
+	for (unsigned int i = min; i < max; i++) {
 		if (AnimationTime <= (float)pNodeAnim->mPositionKeys[i+1].mTime) {
 			return i;
 		}
@@ -231,8 +243,11 @@ unsigned int Animation::FindPosition(float AnimationTime, const aiNodeAnim* pNod
 unsigned int Animation::FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim)
 {
 	assert(pNodeAnim->mNumRotationKeys > 0);
+	
+	unsigned int min = mHasSplitAnimation ? mStartKey : 0;
+	unsigned int max = mHasSplitAnimation ? mEndKey : pNodeAnim->mNumRotationKeys - 1;
 
-	for (unsigned int i = mStartKey; i < mEndKey; i++) {
+	for (unsigned int i = min; i < max; i++) {
 		if (AnimationTime <= (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
 			return i;
 		}
@@ -245,8 +260,10 @@ unsigned int Animation::FindRotation(float AnimationTime, const aiNodeAnim* pNod
 unsigned int Animation::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim)
 {
 	assert(pNodeAnim->mNumScalingKeys > 0);
+	unsigned int min = mHasSplitAnimation ? mStartKey : 0;
+	unsigned int max = mHasSplitAnimation ? mEndKey : pNodeAnim->mNumScalingKeys - 1;
 
-	for (unsigned int i = mStartKey; i < mEndKey; i++) {
+	for (unsigned int i = min; i < max; i++) {
 		if (AnimationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
 			return i;
 		}
@@ -262,14 +279,16 @@ void Animation::AddAnimationInfo(std::string name, unsigned int startKey, unsign
 	animationInfo.duration = duration;
 	animationInfo.startKey = startKey;
 	animationInfo.endKey = endKey;
-	
+	mHasSplitAnimation = true;
 	if (mAnimationInfo.find(name) == mAnimationInfo.end())
 	{
 		mAnimationLocation.push_back(animationInfo);
 		mAnimationInfo.insert(std::pair<std::string, unsigned int>(name, mAnimationLocation.size() - 1));
 
-		if (mAnimationLocation.size() == 1)
+		if (mAnimationLocation.size() == 1) {
+		
 			SetAnimation(name);
+		}
 	}
 }
 
@@ -280,13 +299,16 @@ bool Animation::IsAnimatedInThisFrame()
 
 void Animation::SetAnimation(std::string animationName)
 {
-	auto index = mAnimationInfo.find(animationName);
+	if (mHasSplitAnimation)
+	{
+		auto index = mAnimationInfo.find(animationName);
 
-	AnimationInfo anim = mAnimationLocation[index->second];
+		AnimationInfo anim = mAnimationLocation[index->second];
 
-	mStartKey = anim.startKey;
-	mEndKey = anim.endKey;
-	mDuration = anim.duration;
+		mStartKey = anim.startKey;
+		mEndKey = anim.endKey;
+		mDuration = anim.duration;
+	}
 }
 
 void Animation::StartAnimation()
@@ -302,4 +324,9 @@ void Animation::StopAnimation()
 float Animation::GetAnimationDuration()
 {
 	return mDuration;
+}
+
+bool Animation::IsSplitAnimation()
+{
+	return mHasSplitAnimation;
 }

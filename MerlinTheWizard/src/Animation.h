@@ -40,6 +40,7 @@ public:
 
 	float GetAnimationDuration();
 
+	bool IsSplitAnimation();
 private:
 	struct BoneInfo
 	{
@@ -68,6 +69,7 @@ private:
 	bool mIsAnimated = false;
 	bool mIsLocationSetted = false;
 	bool mIsAnimatedInThisFrame = false;
+	bool mHasSplitAnimation = false;
 	const aiScene *mScene;
 	
 	aiMatrix4x4 mGlobalInverseTransform;

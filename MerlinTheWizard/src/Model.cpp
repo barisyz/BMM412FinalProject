@@ -87,18 +87,31 @@ void Model::Draw(Shader shader, float time)
 {
 	if (mAnimation.IsAnimated())
 	{
-		if (!mAnimation.IsLocationSetted())
+		if (!mAnimation.IsLocationSetted()) 
 		{
 			mAnimation.SetupBonesLocation(shader.GetID());
 			mAnimation.MakeBoneTransform(0);
 		}
-		
-		if (mAnimation.IsAnimatedInThisFrame())
+			
+		float RunningTime = (float)((double)glfwGetTime() - (double)time);
+
+		if (mAnimation.IsSplitAnimation())
 		{
-			float RunningTime = (float)((double)glfwGetTime() - (double)time);
-			mAnimation.MakeBoneTransform(RunningTime);
-			mAnimation.StopAnimation();
+			if (mAnimation.IsAnimatedInThisFrame())
+			{
+				mAnimation.MakeBoneTransform(RunningTime);
+				mAnimation.StopAnimation();
+			}
+			else
+			{
+				mAnimation.MakeBoneTransform(0);
+			}
 		}
+		else 
+		{
+			mAnimation.MakeBoneTransform(RunningTime);
+		}
+		
 	}
 
 	for (unsigned int i = 0; i < mMeshes.size(); i++)

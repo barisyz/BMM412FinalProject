@@ -271,8 +271,6 @@ void Camera::UpdateProcess(double deltatime)
 	pointCollider.size.x = abs(c_direction.x) * sqrtf((pointCollider.position.x - c_position.x) * (pointCollider.position.x - c_position.x));
 	pointCollider.size.y = abs(c_direction.y) * sqrtf((pointCollider.position.y - c_position.y) * (pointCollider.position.y - c_position.y));
 	pointCollider.size.z = abs(c_direction.z) * sqrtf((pointCollider.position.z - c_position.z) * (pointCollider.position.z - c_position.z));
-
-
 }
 
 void Camera::SetVelocitySpell() {
