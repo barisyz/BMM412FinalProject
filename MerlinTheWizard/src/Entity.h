@@ -44,6 +44,7 @@ public:
 	void AddParticleSystem(ParticleSystem sys);
 	std::vector<ParticleSystem> GetParticleSystemList();
 	GLuint GetShader();
+	void SetShader(Shader shader);
 	glm::mat4 GetModelMatrix();
 	glm::vec3 GetPosition();
 	void SetPosition(glm::vec3 position);

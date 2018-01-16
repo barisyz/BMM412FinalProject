@@ -189,12 +189,12 @@
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="perVertex.frag" />
-    <None Include="perVertex.vert" />
     <None Include="res\shaders\BasicVertex.glsl" />
     <None Include="res\shaders\FragmentShader.glsl" />
     <None Include="res\shaders\particle.frag" />
     <None Include="res\shaders\particle.vert" />
+    <None Include="res\shaders\perVertex.frag" />
+    <None Include="res\shaders\perVertex.vert" />
     <None Include="res\shaders\SkinningFrag.glsl" />
     <None Include="res\shaders\SkinningVertex.glsl" />
   </ItemGroup>

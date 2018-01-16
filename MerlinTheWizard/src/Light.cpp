@@ -26,15 +26,23 @@ void Light::ChangeColour(glm::vec4 colour) {
 void Light::Input(int key) {
 
 	if (key == GLFW_KEY_1) {
-		this->position.z -= 0.1;
+		this->position.z -= 0.3;
 	}
 	if (key == GLFW_KEY_2) {
-		this->position.z += 0.1;
+		this->position.z += 0.3;
 	}
 	if (key == GLFW_KEY_3) {
-		this->position.x -= 0.1;
+		this->position.x -= 0.3;
 	}
 	if (key == GLFW_KEY_4) {
-		this->position.x += 0.1;
+		this->position.x += 0.3;
 	}
+	if (key == GLFW_KEY_5) {
+		this->position.y -= 0.3;
+	}
+	if (key == GLFW_KEY_6) {
+		this->position.y += 0.3;
+	}
+
+	
 }
