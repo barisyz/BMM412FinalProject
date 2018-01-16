@@ -130,10 +130,10 @@
     <None Include="res\shaders\SkinningVertex.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="perVertex.vert">
+    <None Include="res\shaders\perVertex.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="perVertex.frag">
+    <None Include="res\shaders\perVertex.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

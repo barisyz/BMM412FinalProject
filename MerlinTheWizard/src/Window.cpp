@@ -1,10 +1,14 @@
 #include "Window.h"
+#include "Camera.h"
 
 void WindowSizeCallback(GLFWwindow* window, int width, int height)
 {
 	//todo camera frustumuda degistirilecek
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
+
+	Camera *cam = static_cast<Camera *>(glfwGetWindowUserPointer(window));
+	cam->Reshape(width, height);
 }
 
 Window::Window(int width, int height, const char* title)

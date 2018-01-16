@@ -13,6 +13,7 @@ void error_callback(int error, const char* description)
 
 int main(void)
 {
+
 	glfwSetErrorCallback(error_callback); //Error callback
 
 	if (!glfwInit())
@@ -22,7 +23,7 @@ int main(void)
 	Window window = Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE);
 
 	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS);
+	//glDepthFunc(GL_LESS);
 
 	GLFWwindow *win = window.getWindow();
 	Renderer renderer = Renderer(win);
@@ -36,6 +37,7 @@ int main(void)
 	double startTime = glfwGetTime();
 	double lastTime = 0;
 	/* Loop until the user closes the window */
+
 	while (!glfwWindowShouldClose(win)) {
 		//Get the time betwwen frames
 		double currentTime = glfwGetTime();

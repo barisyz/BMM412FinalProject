@@ -15,7 +15,7 @@ public:
 	static int leftFlag;
 	static int full;
 	static int mkey;
-
+	static int shaderInt;
 private:
 	GLFWwindow* mWindow;
 	Camera* mCamera;
@@ -31,7 +31,7 @@ private:
 
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-
+		//required for light input
 		mkey = key;
 
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -48,6 +48,13 @@ private:
 			{
 				cam->FollowPlayer();
 			}
+		}
+		if (key == GLFW_KEY_L && action == GLFW_PRESS)
+		{
+			if (shaderInt == 0)
+				shaderInt = 1;
+			else
+				shaderInt = 0;
 		}
 
 		cam->keyboard_event(key, scancode, action, mods);

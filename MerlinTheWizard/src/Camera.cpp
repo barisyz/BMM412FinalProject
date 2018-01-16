@@ -10,14 +10,16 @@ Camera::Camera(int width, int height)
 {
 	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.025f, 2000.0f);
 
-	//example start state
-	c_position = { 0, 0, -1 };
-	c_direction = { 0, 0, 1 };
-	c_upVector = { 0, 1, 0 };
-	c_rightVector = { -1, 0, 0 };
 
-	verticalAngle = 0;
-	horizontalAngle = 0;
+
+	//example start state
+	c_position = { -0.0238649566, 1.06074810, -1.73629391 };
+	c_direction = { 0.0262371451, -0.484682769, 0.874296427 };
+	c_upVector = { 0.0149242813, 0.874689758, 0.484452963 };
+	c_rightVector = { -0.999525845, 0, 0.0307918545 };
+
+	verticalAngle = -0.506000459;
+	horizontalAngle = 0.0300004352;
 
 	pointCollider.initialized = true;
 	pointCollider.position = ((c_position + c_direction) + c_position) / 2;
@@ -237,7 +239,7 @@ void Camera::mouse_event(double xpos, double ypos)
 
 void Camera::UpdateProcess(double deltatime)
 {
-	float speed = 10 * deltatime;
+	float speed = 5 * deltatime;
 
 	if (key_events_buffer[GLFW_KEY_W])
 	{
@@ -280,5 +282,10 @@ void Camera::UpdateProcess(double deltatime)
 void Camera::SetVelocitySpell() {
 
 	this->spell->SetVelocity(normalize(c_direction) * 2);
+
+}
+void Camera::Reshape(float w, float h) {
+
+	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)w / (float)h, 0.025f, 2000.0f);
 
 }

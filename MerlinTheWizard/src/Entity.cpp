@@ -155,3 +155,7 @@ void Entity::SetVelocity(glm::vec3 velocity) {
 
 	//do not use with enities. Use with spells only.
 }
+void Entity::SetShader(Shader shader) {
+	
+	mShader = shader;
+}

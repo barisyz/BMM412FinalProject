@@ -52,6 +52,7 @@ public:
 
 	bool IsInFreeMode();
 	void ToogleCamera();
+	void Reshape(float w, float h);
 	//void scroll_event(double xoffset, double yoffset);
 private:
 	Entity* mPlayer;

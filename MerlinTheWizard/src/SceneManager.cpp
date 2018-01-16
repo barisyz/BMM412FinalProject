@@ -22,17 +22,23 @@ void SceneManager::CreateScene()
 	std::string vertexShaderPath = ShaderBase + "BasicVertex.glsl";
 	std::string fragmentShaderPath = ShaderBase + "FragmentShader.glsl";
 
+	std::string pervertexVertexShaderPath = ShaderBase + "perVertex.vert";
+	std::string perVertexFragmentShaderPath = ShaderBase + "perVertex.frag";
+
 	std::string skinnigVertexShaderPath = ShaderBase + "SkinningVertex.glsl";
 	std::string skinningFragmentShaderPath = ShaderBase + "SkinningFrag.glsl";
 
 	std::string particleVertexShaderPath = ShaderBase + "particle.vert";
 	std::string particleFragmentShaderPath = ShaderBase + "particle.frag";
 
-	mShader.LoadShader(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
+	fragShader.LoadShader(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
+	vertexShader.LoadShader(pervertexVertexShaderPath.c_str(), perVertexFragmentShaderPath.c_str());
 	mSkinningShader.LoadShader(skinnigVertexShaderPath.c_str(), skinningFragmentShaderPath.c_str());
 	particleShader.LoadShader(particleVertexShaderPath.c_str(), particleFragmentShaderPath.c_str());
 
 	mInputManager = InputManager(mWindow, &mCamera, &light);
+
+	mShader = fragShader;
 
 	CreateModels();
 
@@ -87,9 +93,14 @@ void SceneManager::drawAll(double deltaTime)
 
 }
 
-void SceneManager::UpdateScene() {
+void SceneManager::UpdateScene(float deltaTime) {
+
+	ChangeShaders();
 
 	light.Input(InputManager::mkey);
+	InputManager::mkey = 0;
+
+
 
 	for (unsigned int i = 0; i < mSpellList.size(); i++) {
 
@@ -101,10 +112,11 @@ void SceneManager::UpdateScene() {
 				}
 			}
 			else {
+
 				(&mCamera)->spell->SetPosition(mCamera.pointCollider.position);
 				(&mCamera)->spell->Rotate(glm::vec3(1, 1, 1), (&mCamera)->spell->theta * 180 / 3.14);
 				if ((&mCamera)->spell->theta < 360.0f)
-					(&mCamera)->spell->theta += 0.0001f;
+					(&mCamera)->spell->theta += 0.00001f;
 				else
 					(&mCamera)->spell->theta = 0.0f;
 			}
@@ -124,6 +136,7 @@ void SceneManager::CreateModels()
 	std::string wizardStr = ModelBase + "wizard.dae";
 	std::string cloudStr = ModelBase + "cloud.obj";
 	std::string rockStr = ModelBase + "rock.obj";
+	std::string stoneStr = ModelBase + "stone.obj";
 	std::string sceneStr = ModelBase + "completeScene.obj";
 	std::string targetStr = ModelBase + "untitled.obj";
 	/*std::string wolfStr = ModelBase + "wolf1.dae";
@@ -140,11 +153,11 @@ void SceneManager::CreateModels()
 	Entity target = Entity(targetStr.c_str(), mShader);
 	target.Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 	target.Translate(glm::vec3(-0.33, 0.7f, 2.78f));
-	target.InitiaizeCollider(glm::vec3(0.5, 0.5, 0.1));
+	target.InitiaizeCollider(glm::vec3(0.5, 0.3, 0.5));
 	//target.Rotate(glm::vec3(0, 1, 0), 90);
 	mEntityList.push_back(target);
 
-	Entity rock = Entity(rockStr.c_str(), mShader);
+	Entity rock = Entity(stoneStr.c_str(), mShader);
 	rock.Scale(glm::vec3(1, 1, 1));
 	rock.Translate(glm::vec3(-3.86f, 0, -0.6f));
 	rock.InitiaizeCollider(glm::vec3(0.7, 0.2, 0.8));
@@ -168,47 +181,54 @@ void SceneManager::CreateModels()
 	volcano.SetGravity(true);
 	volcano.positionType = 0;
 	volcano.randomdir = true;
+	volcano.playable = true;
 	volcano.SetTripleS(1, 0.5f, 3);
 	scene.AddParticleSystem(volcano);
 
 	ParticleSystem fire1 = ParticleSystem(50);
 	fire1.SetBuffers(particleShader);
 	fire1.maindirType = 0;
-	fire1.SetStartVariables(1.2f, 10, 0.2f, glm::vec4(1, 0, 0, 1));
+	fire1.SetStartVariables(0.8f, 10, 0.2f, glm::vec4(1, 0, 0, 1));
 	fire1.SetStartPosition(glm::vec3(-6.11f, 0.07f, 1.23f));
 	fire1.SetGravity();
 	fire1.positionType = 1;
+	fire1.playable = true;
 	fire1.SetTripleS(1, 0.2f, 0);
 	scene.AddParticleSystem(fire1);
 
 	ParticleSystem fire2 = ParticleSystem(30);
 	fire2.SetBuffers(particleShader);
 	fire2.maindirType = 0;
-	fire2.SetStartVariables(1, 10, 0.1f, glm::vec4(1, 0, 1, 1));
+	fire2.SetStartVariables(0.5, 10, 0.1f, glm::vec4(1, 0, 1, 1));
 	fire2.SetStartPosition(glm::vec3(-6.11f, 0.07f, 1.23f));
 	fire2.SetGravity();
 	fire2.positionType = 1;
 	fire2.SetTripleS(1, 0.2f, 0);
+	fire2.playable = true;
 	scene.AddParticleSystem(fire2);
 
 	mEntityList.push_back(scene);
 
 	std::string spell;
 	glm::vec4 colour;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 15; i++)
 	{
 
 		if (i < 5) {
 			spell = "res/models/sphere.obj";
 			colour = glm::vec4(1, 0, 0, 1);
 		}
-		else {
+		else if(i >= 5 && i < 10){
 			spell = "res/models/cone.obj";
 			colour = glm::vec4(0, 1, 0, 1);
 		}
+		else {
+			spell = "res/models/rock.obj";
+			colour = glm::vec4(0, 0, 0, 1);
+		}
 		Spell *fire1 = new Spell(spell.c_str(), mShader);
-		fire1->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
-		fire1->Translate(glm::vec3(-2.0f + (float)i / 3, 0.1f, 0.0f));
+		fire1->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
+		fire1->Translate(glm::vec3(-2.0f + (float)i / 3.5, 0.2f, 0.0f));
 
 		ParticleSystem sys2 = ParticleSystem();
 		sys2.SetBuffers(particleShader);
@@ -218,7 +238,7 @@ void SceneManager::CreateModels()
 		sys2.SetGravity();
 		sys2.positionType = 2;
 		sys2.playable = false;
-		sys2.SetTripleS(1, 0.1f, 0);
+		sys2.SetTripleS(1, 0.05f, 0);
 		fire1->AddParticleSystem(sys2);
 
 		ParticleSystem sys = ParticleSystem();
@@ -231,17 +251,18 @@ void SceneManager::CreateModels()
 		sys.loop = false;
 		sys.playable = false;
 		sys.looplife = 4.0f;
-		sys.SetTripleS(0.1f, 0.1f, 0);
+		sys.SetTripleS(0.1f, 0.05f, 0);
 		fire1->AddParticleSystem(sys);
 
 		ParticleSystem sys3 = ParticleSystem(20);
 		sys3.SetBuffers(particleShader);
 		sys3.maindirType = 0;
-		sys3.SetStartVariables(0.2f, 0.15f, 0.1f, colour);
+		sys3.SetStartVariables(0.2f, 0.10f, 0.05f, colour);
 		sys3.SetStartPosition(fire1->GetPosition());
 		sys3.SetGravity();
 		sys3.positionType = 2;
-		sys3.SetTripleS(1, 0.1f, 0);
+		sys3.playable = true;
+		sys3.SetTripleS(1, 0.05f, 0);
 		fire1->AddParticleSystem(sys3);
 
 		//fire1.SetVelocity(glm::vec3(0.5, 0.03, 0));
@@ -251,4 +272,20 @@ void SceneManager::CreateModels()
 	mCamera.AttachPlayer(&mEntityList[0]);
 
 	glEnable(GL_DEPTH_TEST);
+}
+
+void SceneManager::ChangeShaders() {
+	if (InputManager::shaderInt == 1)
+		mShader = vertexShader;
+	else
+		mShader = fragShader;
+
+	for (unsigned i = 1; i < mEntityList.size(); i++)
+	{
+		mEntityList[i].SetShader(mShader);
+	}
+	for (unsigned i = 0; i < mSpellList.size(); i++)
+	{
+		mSpellList[i].SetShader(mShader);
+	}
 }

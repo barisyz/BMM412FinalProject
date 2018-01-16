@@ -16,14 +16,18 @@ public:
 	//~SceneManager();
 	void CreateScene();
 	void drawAll(double deltaTime);
-	void UpdateScene();
+	void UpdateScene(float deltaTime);
 	void CreateModels();
+	void ChangeShaders();
 private:
 	std::string ShaderBase = "res/shaders/";
 	std::string ModelBase = "res/models/";
 	Shader mShader;
+	Shader vertexShader;
+	Shader fragShader;
 	Shader particleShader;
 	Shader mSkinningShader;
+
 	Light light;
 	std::vector<Entity> mEntityList;
 	std::vector<Spell> mSpellList;
