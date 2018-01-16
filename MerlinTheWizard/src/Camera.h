@@ -61,7 +61,7 @@ private:
 	bool mFreeMode = true;
 	bool key_events_buffer[1024] = { 0 };
 	double mouse_position_buffer[3];
-	float mSpeedConstant = 10;
+	float mSpeedConstant = 3;
 	float horizontalAngle, verticalAngle;
 	
 	void Movement(glm::vec3 temp);

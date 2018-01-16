@@ -129,12 +129,7 @@ void SceneManager::UpdateScene(float deltaTime) {
 					(&mCamera)->spell->theta = 0.0f;
 			}
 		}
-		//BUG ÇIKARIYO XDééééééé
-		/*for (unsigned int i = 0; i < mSpellList.size(); i++) {
-		//çalışmaması lazım ama çalışıyo denediğim her koşulda xdé
-		if (mSpellList[i].GetParticleSystemList()[1].looplife <= 0)
-		mSpellList.erase(mSpellList.begin() + i);
-		}*/
+
 	}
 }
 
@@ -142,7 +137,6 @@ void SceneManager::CreateModels()
 {
 	//model string
 	std::string wizardStr = ModelBase + "wizard1.dae";
-	std::string cloudStr = ModelBase + "cloud.obj";
 	std::string rockStr = ModelBase + "rock.obj";
 	std::string stoneStr = ModelBase + "stone.obj";
 	std::string sceneStr = ModelBase + "completeScene.obj";
@@ -167,11 +161,11 @@ void SceneManager::CreateModels()
 	spider.Translate(glm::vec3(4.73, 0.0f, 0.1f));
 	mEntityList.push_back(spider);
 
-	Entity wolf = Entity(wolfStr.c_str(), mSkinningShader);
+/*	Entity wolf = Entity(wolfStr.c_str(), mSkinningShader);
 	wolf.Scale(glm::vec3(0.45f, 0.45f, 0.35f));
 	wolf.Translate(glm::vec3(-4.4, 0.0f, 1.1f));
-	wolf.Rotate(glm::vec3(0.0, 1.0f, 0.0f), 90);
-	mEntityList.push_back(wolf);
+	wolf.Rotate(glm::vec3(1.0, 0.0f, 0.0f), 90);
+	mEntityList.push_back(wolf);*/
 
 	Entity target = Entity(targetStr.c_str(), mShader);
 	target.Scale(glm::vec3(0.1f, 0.1f, 0.1f));
@@ -222,7 +216,7 @@ void SceneManager::CreateModels()
 	ParticleSystem fire2 = ParticleSystem(30);
 	fire2.SetBuffers(particleShader);
 	fire2.maindirType = 0;
-	fire2.SetStartVariables(0.5, 10, 0.1f, glm::vec4(1, 0, 1, 1));
+	fire2.SetStartVariables(0.3, 10, 0.1f, glm::vec4(1, 0, 1, 1));
 	fire2.SetStartPosition(glm::vec3(-6.11f, 0.07f, 1.23f));
 	fire2.SetGravity();
 	fire2.positionType = 1;
@@ -277,7 +271,7 @@ void SceneManager::CreateModels()
 		sys.SetTripleS(0.1f, 0.05f, 0);
 		fire1->AddParticleSystem(sys);
 
-		ParticleSystem sys3 = ParticleSystem(20);
+		ParticleSystem sys3 = ParticleSystem(10);
 		sys3.SetBuffers(particleShader);
 		sys3.maindirType = 0;
 		sys3.SetStartVariables(0.2f, 0.10f, 0.05f, colour);

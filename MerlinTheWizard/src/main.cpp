@@ -36,7 +36,7 @@ int main(void)
 	int width, height;
 	double startTime = glfwGetTime();
 	double lastTime = 0;
-	/* Loop until the user closes the window */
+	/* Loop until the user closes the window */	
 
 	while (!glfwWindowShouldClose(win)) {
 		//Get the time betwwen frames
