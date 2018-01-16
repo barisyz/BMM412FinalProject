@@ -8,7 +8,7 @@ Camera::Camera()
 
 Camera::Camera(int width, int height)
 {
-	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.025f, 2000.0f);
+	c_projectionMatrix = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.13f, 2000.0f);
 
 
 
@@ -135,15 +135,23 @@ void Camera::Rotate(float ypos, float xpos) {
 	glm::vec3 upVector = glm::cross(c_rightVector, c_direction);
 
 	if (!mFreeMode) {
-		c_direction.z = 0;
+		//c_direction.z = 0;
+
+		if (verticalAngle > 0.7)
+			verticalAngle = 0.7;
+		
+		if (verticalAngle < -0.7)
+			verticalAngle = -0.7;
+
 		c_direction = direction;
 		c_rightVector = rightVector;
 		c_upVector = glm::cross(c_rightVector, c_direction);
 
 		glm::vec3 rotation = glm::vec3(0, c_viewMatrix[1][1], 0);
+		mPlayer->Rotate(rotation, horizontalAngle);
+		
 		//c_offset.z = c_offset.z * cos(horizontalAngle - 3.14f / 2.0f);
 
-		mPlayer->Rotate(rotation, horizontalAngle);
 	}
 	else
 	{
@@ -212,7 +220,7 @@ bool Camera::IsInFreeMode()
 void Camera::ToogleCamera()
 {
 	mFreeMode = !mFreeMode;
-	mSpeedConstant = mFreeMode ? 10.0f : 1.0f;
+	mSpeedConstant = mFreeMode ? 5.0f : 1.0f;
 	if (!mFreeMode) {
 		FollowPlayer();
 	}
